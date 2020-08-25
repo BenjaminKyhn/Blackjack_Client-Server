@@ -57,9 +57,18 @@ public class BlackjackServer implements BlackjackConstants {
 
                 toDealer.writeInt(1);
 
+                int card1 = (int) (Math.random() * 52) + 1;
+                int card2 = (int) (Math.random() * 52) + 1;
+                int card3 = (int) (Math.random() * 52) + 1;
+                int card4 = (int) (Math.random() * 52) + 1;
+
+                toDealer.writeInt(card1);
+                toDealer.writeInt(card2);
+                toPlayer1.writeInt(card3);
+                toPlayer1.writeInt(card4);
+
                 while (true){
-                    int card = fromDealer.readInt();
-                    int card1 = fromPlayer1.readInt();
+
                 }
             } catch (IOException e){
                 e.printStackTrace();
