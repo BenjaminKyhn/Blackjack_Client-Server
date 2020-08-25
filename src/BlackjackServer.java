@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class BlackjackServer implements BlackjackConstants {
@@ -57,15 +58,46 @@ public class BlackjackServer implements BlackjackConstants {
 
                 toDealer.writeInt(1);
 
-                int card1 = (int) (Math.random() * 52) + 1;
-                int card2 = (int) (Math.random() * 52) + 1;
-                int card3 = (int) (Math.random() * 52) + 1;
-                int card4 = (int) (Math.random() * 52) + 1;
+                ArrayList<Integer> deck = new ArrayList<>();
 
-                toDealer.writeInt(card1);
-                toDealer.writeInt(card2);
-                toPlayer1.writeInt(card3);
-                toPlayer1.writeInt(card4);
+                for (int i = 1; i < 53; i++) {
+                    deck.add(i);
+                }
+
+                ArrayList<Integer> dealerCards = new ArrayList<>();
+                ArrayList<Integer> playerCards = new ArrayList<>();
+
+                for (int i = 0; i < 4; i++) {
+                    int card = (int)(Math.random() * 52) + 1;
+                    if (deck.contains(card) && i < 2){
+                        dealerCards.add(card);
+                        deck.remove(card);
+                    }
+                    else if (deck.contains(card)){
+                        playerCards.add(card);
+                        deck.remove(card);
+                    }
+                }
+
+                System.out.println("Deck:");
+                for (int i = 0; i < deck.size(); i++) {
+                    System.out.println(deck.get(i));
+                }
+
+                System.out.println("Dealer's cards:");
+                for (int i = 0; i < dealerCards.size(); i++) {
+                    System.out.println(dealerCards.get(i));
+                }
+
+                System.out.println("Player's cards:");
+                for (int i = 0; i < playerCards.size(); i++) {
+                    System.out.println(playerCards.get(i));
+                }
+
+                toDealer.writeInt(dealerCards.get(0));
+                toDealer.writeInt(dealerCards.get(1));
+                toPlayer1.writeInt(dealerCards.get(0));
+                toPlayer1.writeInt(dealerCards.get(1));
 
                 while (true){
 
