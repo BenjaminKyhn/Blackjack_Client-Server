@@ -49,10 +49,13 @@ public class StudentServer {
                 outputToClient = new ObjectOutputStream(socket.getOutputStream());
                 inputFromClient = new ObjectInputStream(socket.getInputStream());
 
-                Object object = inputFromClient.readObject();
+                int clientNo = inputFromClient.readInt();
+                System.out.println("Client no: " + clientNo);
+
+                StudentAddress object = (StudentAddress) inputFromClient.readObject();
 
                 outputToClient.writeObject(object);
-                System.out.println("The student object is sent back");
+                System.out.println(object.getName() + " sent back to the client");
             } catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();
             }

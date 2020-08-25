@@ -16,7 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class StudentClient extends Application {
+public class StudentClient2 extends Application {
     private TextField tfName = new TextField();
     private TextField tfStreet = new TextField();
     private TextField tfCity = new TextField();
@@ -74,6 +74,8 @@ public class StudentClient extends Application {
 
             new Thread(() -> {
                 try {
+                    toServer.writeInt(2);
+
                     String name = tfName.getText().trim();
                     String street = tfStreet.getText().trim();
                     String city = tfCity.getText().trim();
