@@ -49,10 +49,14 @@ public class BlackjackServer implements BlackjackConstants {
         @Override
         public void run() {
             try {
-                ObjectInputStream fromDealer = new ObjectInputStream(dealer.getInputStream());
-                ObjectOutputStream toDealer = new ObjectOutputStream(dealer.getOutputStream());
-                ObjectInputStream fromPlayer1 = new ObjectInputStream(player1.getInputStream());
-                ObjectOutputStream toPlayer1 = new ObjectOutputStream(player1.getOutputStream());
+                DataInputStream fromDealer = new DataInputStream(dealer.getInputStream());
+                DataOutputStream toDealer = new DataOutputStream(dealer.getOutputStream());
+                DataInputStream fromPlayer1 = new DataInputStream(player1.getInputStream());
+                DataOutputStream toPlayer1 = new DataOutputStream(player1.getOutputStream());
+                ObjectInputStream objectFromDealer = new ObjectInputStream(dealer.getInputStream());
+                ObjectOutputStream objectToDealer = new ObjectOutputStream(dealer.getOutputStream());
+                ObjectInputStream objectFromPlayer1 = new ObjectInputStream(player1.getInputStream());
+                ObjectOutputStream objectToPlayer1 = new ObjectOutputStream(player1.getOutputStream());
 
                 toDealer.writeInt(1);
 
@@ -62,7 +66,7 @@ public class BlackjackServer implements BlackjackConstants {
                 ArrayList<Card> playerCards = new ArrayList<>();
 
                 for (int i = 0; i < 4; i++) {
-                    Card card = deck.get((int)(Math.random() * 52) + 1);
+                    Card card = deck.get((int)(Math.random() * 52));
                     if (deck.contains(card) && i < 2){
                         dealerCards.add(card);
                         deck.remove(card);
@@ -88,10 +92,10 @@ public class BlackjackServer implements BlackjackConstants {
                     System.out.println(playerCards.get(i));
                 }
 
-                toDealer.writeObject(dealerCards.get(0));
-                toDealer.writeObject(dealerCards.get(1));
-                toPlayer1.writeObject(playerCards.get(0));
-                toPlayer1.writeObject(playerCards.get(1));
+                objectToDealer.writeObject(dealerCards.get(0));
+                objectToDealer.writeObject(dealerCards.get(1));
+                objectToPlayer1.writeObject(playerCards.get(0));
+                objectToDealer.writeObject(playerCards.get(1));
 
                 while (true){
 
