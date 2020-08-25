@@ -1,11 +1,13 @@
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 public class BlackjackClient2 implements BlackjackConstants {
     private static String host = "localhost";
     private static int port = 8010;
-    private static ObjectInputStream fromServer;
-    private static ObjectOutputStream toServer;
+    private static DataInputStream fromServer;
+    private static DataOutputStream toServer;
     private static boolean continueToPlay = true;
 
     public static void main(String[] args) {
@@ -15,8 +17,8 @@ public class BlackjackClient2 implements BlackjackConstants {
     private static void connectToServer() {
         try {
             Socket socket = new Socket(host, port);
-            fromServer = new ObjectInputStream(socket.getInputStream());
-            toServer = new ObjectOutputStream(socket.getOutputStream());
+            fromServer = new DataInputStream(socket.getInputStream());
+            toServer = new DataOutputStream(socket.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,8 +39,8 @@ public class BlackjackClient2 implements BlackjackConstants {
                     System.out.println("You are the player.");
                 }
 
-                Object card1 = fromServer.readObject();
-                Object card2 = fromServer.readObject();
+                int card1 = fromServer.readInt();
+                int card2 = fromServer.readInt();
                 System.out.println("Your cards are " + card1 + " and " + card2 + ".");
 
                 while (continueToPlay) {
