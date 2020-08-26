@@ -36,14 +36,7 @@ public class BlackjackClient2 {
 
         new Thread(() -> {
             try {
-                toServer.writeInt(2);
-
-                Card s = new Card("Ace", "Diamonds");
-                toServer.writeObject(s);
-
-                Card card = (Card) fromServer.readObject();
-
-                System.out.println(card.getValue());
+                System.out.println("test");
             } catch (Exception e){
                 e.printStackTrace();
             }

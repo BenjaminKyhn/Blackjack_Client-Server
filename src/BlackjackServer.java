@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 
 // Brug synchronized Deck for at undgå race conditions
 
@@ -17,7 +18,7 @@ public class BlackjackServer implements BlackjackConstants{
     public BlackjackServer() {
         try {
             ServerSocket serverSocket = new ServerSocket(8015);
-            System.out.println("Server started ");
+            System.out.println(new Date() + ": Blackjack server started");
 
             while (true) {
                 Socket player1 = serverSocket.accept();
@@ -52,19 +53,8 @@ public class BlackjackServer implements BlackjackConstants{
         @Override
         public void run() {
             try {
-                int clientNo1 = fromPlayer1.readInt();
-                int clientNo2 = fromPlayer2.readInt();
-                System.out.println("Player1 client no: " + clientNo1);
-                System.out.println("Player1 client no: " + clientNo2);
-
-                Card card1 = (Card) fromPlayer1.readObject();
-                Card card2 = (Card) fromPlayer2.readObject();
-
-                toPlayer1.writeObject(card1);
-                toPlayer2.writeObject(card2);
-
-                toPlayer1.writeObject(1);
-            } catch (IOException | ClassNotFoundException e) {
+                Deck deck = new Deck();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

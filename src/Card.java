@@ -1,40 +1,37 @@
 import java.io.Serializable;
 
 public class Card implements Serializable {
-    private String value;
-    private String suit;
+    private Ranks rank;
+    private Suits suit;
+    private int value;
 
-    public Card(String value, String suit){
-        this.value = value;
+    public Card(Ranks rank, Suits suit){
+        this.rank = rank;
         this.suit = suit;
+        this.value = rank.getValue();
     }
 
-    public String getValue() {
-        return value;
+    public Ranks getRank() {
+        return rank;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setRank(Ranks rank) {
+        this.rank = rank;
     }
 
-    public String getSuit() {
+    public Suits getSuit() {
         return suit;
     }
 
-    public void setSuit(String suit) {
+    public void setSuit(Suits suit) {
         this.suit = suit;
     }
 
-    public int getNumericValue(boolean smallAce){
-        if (value.equals("Jack") || value.equals("Queen") || value.equals("King"))
-            return 10;
-        else if (value.equals("Ace")){
-            if (smallAce)
-                return 1;
-            else
-                return 11;
-        }
-        else
-            return Integer.parseInt(value);
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }
