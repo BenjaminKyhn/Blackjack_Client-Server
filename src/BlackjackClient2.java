@@ -32,7 +32,7 @@ public class BlackjackClient2 {
             try {
                 toServer.writeInt(2);
 
-                Card s = new Card("Queen", "Diamonds");
+                Card s = new Card("Ace", "Diamonds");
                 toServer.writeObject(s);
 
                 Card card = (Card) fromServer.readObject();
