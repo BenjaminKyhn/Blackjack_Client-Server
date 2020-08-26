@@ -111,6 +111,8 @@ public class BlackjackServer implements BlackjackConstants {
 
                 System.out.println("Player 2 chose to stand. Both players are finished playing");
 
+                //TODO: Add lose condition for players choosing to hit
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
