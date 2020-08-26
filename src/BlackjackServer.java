@@ -11,9 +11,7 @@ public class BlackjackServer {
     private ObjectOutputStream toPlayer2;
 
     public static void main(String[] args) {
-        new Thread(() ->{
-            new BlackjackServer();
-        }).start();
+        new BlackjackServer();
     }
 
     public BlackjackServer() {
@@ -26,13 +24,12 @@ public class BlackjackServer {
                 System.out.println("Player one connected.");
                 toPlayer1 = new ObjectOutputStream(player1.getOutputStream());
                 fromPlayer1 = new ObjectInputStream(player1.getInputStream());
-                toPlayer1.writeInt(1);
+//                toPlayer1.writeInt(1); DOES NOT WORK?
 
                 Socket player2 = serverSocket.accept();
                 System.out.println("Player two connected.");
                 toPlayer2 = new ObjectOutputStream(player2.getOutputStream());
                 fromPlayer2 = new ObjectInputStream(player2.getInputStream());
-                toPlayer2.writeInt(2);
 
                 System.out.println("Starting a new session...");
                 new Thread(new HandleASession(player1, player2)).start();
@@ -64,7 +61,7 @@ public class BlackjackServer {
 
                 toPlayer1.writeObject(card1);
                 toPlayer2.writeObject(card2);
-            } catch (IOException | ClassNotFoundException e){
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }

@@ -32,7 +32,6 @@ public class BlackjackClient1 {
 
         new Thread(() -> {
             try {
-
                 toServer.writeInt(1);
 
                 Card s = new Card("Queen", "Diamonds");

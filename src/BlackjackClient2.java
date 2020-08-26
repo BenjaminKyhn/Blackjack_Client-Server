@@ -32,6 +32,8 @@ public class BlackjackClient2 {
 
         new Thread(() -> {
             try {
+//                int test = fromServer.readInt();
+//                System.out.println(test);
 
                 toServer.writeInt(2);
 
