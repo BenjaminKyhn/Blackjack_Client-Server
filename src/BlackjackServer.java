@@ -18,7 +18,7 @@ public class BlackjackServer implements BlackjackConstants{
     public BlackjackServer() {
         try {
             ServerSocket serverSocket = new ServerSocket(8015);
-            System.out.println(new Date() + ": Blackjack server started");
+            System.out.println(new Date() + ": Blackjack server started. Waiting for players to connect...");
 
             while (true) {
                 Socket player1 = serverSocket.accept();
@@ -33,7 +33,7 @@ public class BlackjackServer implements BlackjackConstants{
                 fromPlayer2 = new ObjectInputStream(player2.getInputStream());
                 toPlayer2.writeObject(PLAYER2);
 
-                System.out.println("Starting a new session...");
+                System.out.println("Game session started for two players");
                 new Thread(new HandleASession(player1, player2)).start();
             }
         } catch (IOException ex) {
