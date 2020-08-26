@@ -1,32 +1,19 @@
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class BlackjackClient1 extends Application {
+public class BlackjackClient1 {
     private ObjectInputStream fromServer;
     private ObjectOutputStream toServer;
-
-    private Button btRegister = new Button("Register to the Server");
-
     String host = "localhost";
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        Pane pane = new Pane();
-        pane.getChildren().add(btRegister);
-        btRegister.setOnAction(e -> connectToServer());
+    public static void main(String[] args) {
+        new BlackjackClient1();
+    }
 
-        Scene scene = new Scene(pane, 450, 200);
-        stage.setTitle("BlackjackClient");
-        stage.setScene(scene);
-        stage.show();
+    public BlackjackClient1(){
+        connectToServer();
     }
 
     public void connectToServer(){
@@ -42,7 +29,7 @@ public class BlackjackClient1 extends Application {
 
         new Thread(() -> {
             try {
-                toServer.writeInt(2);
+                toServer.writeInt(1);
 
                 Card s = new Card("Queen", "Diamonds");
                 toServer.writeObject(s);
