@@ -1,108 +1,62 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
 
-public class BlackjackServer implements BlackjackConstants {
-    private static int sessionNo = 1;
+public class BlackjackServer {
+    private ObjectOutputStream outputToClient;
+    private ObjectInputStream inputFromClient;
 
     public static void main(String[] args) {
-        new Thread(() -> {
-            try {
-                ServerSocket server = new ServerSocket(8010);
-                System.out.println("Server startet at socket " + server.getLocalPort());
-
-                while (true) {
-                    System.out.println("Wait for players to join the game session...");
-
-                    // Connect the dealer
-                    Socket dealer = server.accept();
-                    System.out.println(new Date() + ": The dealer joined session " + sessionNo);
-                    System.out.println("The dealer's IP address is " + dealer.getInetAddress());
-                    new DataOutputStream(dealer.getOutputStream()).writeInt(DEALER);
-
-                    // Connect player 1
-                    Socket player1 = server.accept();
-                    System.out.println(new Date() + ": Player 1 joined session " + sessionNo);
-                    System.out.println("Player 1's IP address is " + player1.getInetAddress());
-                    new DataOutputStream(player1.getOutputStream()).writeInt(PLAYER1);
-
-                    System.out.println(new Date() + ": Starting a session for session " + sessionNo++);
-                    new Thread(new HandleASession(dealer, player1)).start();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+        new Thread(() ->{
+            new StudentServer();
         }).start();
     }
 
-    static class HandleASession implements Runnable, BlackjackConstants {
-        private Socket dealer;
-        private Socket player1;
+    public BlackjackServer() {
+        try {
+            ServerSocket serverSocket = new ServerSocket(8003);
+            System.out.println("Server started ");
 
-        public HandleASession(Socket dealer, Socket player1) {
-            this.dealer = dealer;
-            this.player1 = player1;
+            while (true) {
+                Socket socket = serverSocket.accept();
+
+                new Thread(new HandleASession(socket)).start();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                inputFromClient.close();
+                outputToClient.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    class HandleASession implements Runnable {
+        private Socket socket;
+
+        public HandleASession(Socket socket) {
+            this.socket = socket;
         }
 
         @Override
         public void run() {
             try {
-                DataInputStream fromDealer = new DataInputStream(dealer.getInputStream());
-                DataOutputStream toDealer = new DataOutputStream(dealer.getOutputStream());
-                DataInputStream fromPlayer1 = new DataInputStream(player1.getInputStream());
-                DataOutputStream toPlayer1 = new DataOutputStream(player1.getOutputStream());
+                outputToClient = new ObjectOutputStream(socket.getOutputStream());
+                inputFromClient = new ObjectInputStream(socket.getInputStream());
 
-                toDealer.writeInt(1);
+                int clientNo = inputFromClient.readInt();
+                System.out.println("Client no: " + clientNo);
 
-                ArrayList<Integer> deck = new ArrayList<>();
+                StudentAddress object = (StudentAddress) inputFromClient.readObject();
 
-                for (int i = 1; i < 53; i++) {
-                    deck.add(i);
-                }
-
-                ArrayList<Integer> dealerCards = new ArrayList<>();
-                ArrayList<Integer> playerCards = new ArrayList<>();
-
-                for (int i = 0; i < 4; i++) {
-                    int card = (int)(Math.random() * 52) + 1;
-                    if (deck.contains(card) && i < 2){
-                        dealerCards.add(card);
-                        deck.remove(card);
-                    }
-                    else if (deck.contains(card)){
-                        playerCards.add(card);
-                        deck.remove(card);
-                    }
-                }
-
-                System.out.println("Deck:");
-                for (int i = 0; i < deck.size(); i++) {
-                    System.out.println(deck.get(i));
-                }
-
-                System.out.println("Dealer's cards:");
-                for (int i = 0; i < dealerCards.size(); i++) {
-                    System.out.println(dealerCards.get(i));
-                }
-
-                System.out.println("Player's cards:");
-                for (int i = 0; i < playerCards.size(); i++) {
-                    System.out.println(playerCards.get(i));
-                }
-
-                toDealer.writeInt(dealerCards.get(0));
-                toDealer.writeInt(dealerCards.get(1));
-                toPlayer1.writeInt(dealerCards.get(0));
-                toPlayer1.writeInt(dealerCards.get(1));
-
-                while (true){
-
-                }
-            } catch (IOException e){
+                outputToClient.writeObject(object);
+                System.out.println(object.getName() + " sent back to the client");
+            } catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();
             }
         }

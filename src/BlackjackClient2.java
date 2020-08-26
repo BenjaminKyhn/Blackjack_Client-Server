@@ -1,72 +1,97 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class BlackjackClient2 implements BlackjackConstants {
-    private static String host = "localhost";
-    private static int port = 8010;
-    private static DataInputStream fromServer;
-    private static DataOutputStream toServer;
-    private static boolean continueToPlay = true;
+public class BlackjackClient2 extends Application {
+    private TextField tfName = new TextField();
+    private TextField tfStreet = new TextField();
+    private TextField tfCity = new TextField();
+    private TextField tfState = new TextField();
+    private TextField tfZip = new TextField();
+    private ObjectInputStream fromServer;
+    private ObjectOutputStream toServer;
 
-    public static void main(String[] args) {
-        connectToServer();
+    private Button btRegister = new Button("Register to the Server");
+
+    String host = "localhost";
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        GridPane pane = new GridPane();
+        pane.add(new Label("Name"), 0, 0);
+        pane.add(tfName, 1, 0);
+        pane.add(new Label("Street"), 0, 1);
+        pane.add(tfStreet, 1, 1);
+        pane.add(new Label("City"), 0, 2);
+
+        HBox hBox = new HBox(2);
+        pane.add(hBox, 1, 2);
+        hBox.getChildren().addAll(tfCity, new Label("State"), tfState, new Label("Zip"), tfZip);
+        pane.add(btRegister, 1, 3);
+        GridPane.setHalignment(btRegister, HPos.RIGHT);
+
+        pane.setAlignment(Pos.CENTER);
+        tfName.setPrefColumnCount(15);
+        tfStreet.setPrefColumnCount(15);
+        tfCity.setPrefColumnCount(10);
+        tfState.setPrefColumnCount(2);
+        tfZip.setPrefColumnCount(3);
+
+        btRegister.setOnAction(new ButtonListener());
+
+        Scene scene = new Scene(pane, 450, 200);
+        stage.setTitle("StudentClient");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    private static void connectToServer() {
-        try {
-            Socket socket = new Socket(host, port);
-            fromServer = new DataInputStream(socket.getInputStream());
-            toServer = new DataOutputStream(socket.getOutputStream());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        new Thread(() -> {
+    private class ButtonListener implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent actionEvent) {
             try {
-                int player = fromServer.readInt();
+                Socket socket = new Socket(host, 8003);
 
-                if (player == DEALER) {
-                    System.out.println("You are the dealer.");
-                    System.out.println("Waiting for player to join...");
-
-                    // Receive startup notification from server
-                    fromServer.readInt();
-
-                    System.out.println("Player has joined. Dealing cards.");
-                } else if (player == PLAYER1) {
-                    System.out.println("You are the player.");
-                }
-
-                int card1 = fromServer.readInt();
-                int card2 = fromServer.readInt();
-                System.out.println("Your cards are " + card1 + " and " + card2 + ".");
-
-                while (continueToPlay) {
-                    if (player == DEALER) {
-                    }
-                    else if (player == PLAYER1) {
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                fromServer = new ObjectInputStream(socket.getInputStream());
+                toServer = new ObjectOutputStream(socket.getOutputStream());
             }
-        }).start();
-    }
+            catch (IOException ex){
+                ex.printStackTrace();
+            }
 
-    private static void drawCards() throws IOException {
-        int card1 = (int) (Math.random() * 52) + 1;
-        int card2 = (int) (Math.random() * 52) + 1;
-        int card3 = (int) (Math.random() * 52) + 1;
-        int card4 = (int) (Math.random() * 52) + 1;
-        toServer.writeInt(card1);
-        toServer.writeInt(card2);
-        toServer.writeInt(card3);
-        toServer.writeInt(card4);
-    }
+            new Thread(() -> {
+                try {
+                    toServer.writeInt(1);
 
-    private static void receiveInfoFromServer() throws IOException {
-        int status = fromServer.readInt();
+                    String name = tfName.getText().trim();
+                    String street = tfStreet.getText().trim();
+                    String city = tfCity.getText().trim();
+                    String state = tfState.getText().trim();
+                    String zip = tfZip.getText().trim();
+
+                    StudentAddress s =  new StudentAddress(name, street, city, state, zip);
+                    toServer.writeObject(s);
+
+                    StudentAddress memes = (StudentAddress) fromServer.readObject();
+
+                    System.out.println(memes.getName());
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }).start();
+        }
     }
 }
