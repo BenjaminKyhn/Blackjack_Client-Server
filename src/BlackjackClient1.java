@@ -1,6 +1,4 @@
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
@@ -23,7 +21,7 @@ public class BlackjackClient1 extends Application {
     public void start(Stage stage) throws Exception {
         Pane pane = new Pane();
         pane.getChildren().add(btRegister);
-        btRegister.setOnAction(new ButtonListener());
+        btRegister.setOnAction(e -> connectToServer());
 
         Scene scene = new Scene(pane, 450, 200);
         stage.setTitle("BlackjackClient");
@@ -31,33 +29,30 @@ public class BlackjackClient1 extends Application {
         stage.show();
     }
 
-    private class ButtonListener implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent actionEvent) {
-            try {
-                Socket socket = new Socket(host, 8015);
+    public void connectToServer(){
+        try {
+            Socket socket = new Socket(host, 8015);
 
-                fromServer = new ObjectInputStream(socket.getInputStream());
-                toServer = new ObjectOutputStream(socket.getOutputStream());
-            }
-            catch (IOException ex){
-                ex.printStackTrace();
-            }
-
-            new Thread(() -> {
-                try {
-                    toServer.writeInt(2);
-
-                    Card s = new Card("Queen", "Diamonds");
-                    toServer.writeObject(s);
-
-                    Card card = (Card) fromServer.readObject();
-
-                    System.out.println(card.getValue());
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }).start();
+            fromServer = new ObjectInputStream(socket.getInputStream());
+            toServer = new ObjectOutputStream(socket.getOutputStream());
         }
+        catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+        new Thread(() -> {
+            try {
+                toServer.writeInt(2);
+
+                Card s = new Card("Queen", "Diamonds");
+                toServer.writeObject(s);
+
+                Card card = (Card) fromServer.readObject();
+
+                System.out.println(card.getValue());
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
