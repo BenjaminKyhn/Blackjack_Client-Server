@@ -21,20 +21,21 @@ public class BlackjackClient2 {
         try {
             Socket socket = new Socket(host, port);
 
-            System.out.println("Connected to server. Waiting for other player...");
-
             fromServer = new ObjectInputStream(socket.getInputStream());
             toServer = new ObjectOutputStream(socket.getOutputStream());
+
+            int player = (int)fromServer.readObject();
+            System.out.println("Connected to Server. You are player " + player + ".");
+            if (player == 1){
+                System.out.println("Waiting for other player...");
+            }
         }
-        catch (IOException ex){
+        catch (IOException | ClassNotFoundException ex){
             ex.printStackTrace();
         }
 
         new Thread(() -> {
             try {
-//                int test = fromServer.readInt();
-//                System.out.println(test);
-
                 toServer.writeInt(2);
 
                 Card s = new Card("Ace", "Diamonds");
