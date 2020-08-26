@@ -4,7 +4,7 @@ import java.net.Socket;
 
 // Brug synchronized Deck for at undgå race conditions
 
-public class BlackjackServer {
+public class BlackjackServer implements BlackjackConstants{
     private ObjectInputStream fromPlayer1;
     private ObjectOutputStream toPlayer1;
     private ObjectInputStream fromPlayer2;
@@ -24,13 +24,13 @@ public class BlackjackServer {
                 System.out.println("Player one connected.");
                 toPlayer1 = new ObjectOutputStream(player1.getOutputStream());
                 fromPlayer1 = new ObjectInputStream(player1.getInputStream());
-                toPlayer1.writeObject(1);
+                toPlayer1.writeObject(PLAYER1);
 
                 Socket player2 = serverSocket.accept();
                 System.out.println("Player two connected.");
                 toPlayer2 = new ObjectOutputStream(player2.getOutputStream());
                 fromPlayer2 = new ObjectInputStream(player2.getInputStream());
-                toPlayer2.writeObject(2);
+                toPlayer2.writeObject(PLAYER2);
 
                 System.out.println("Starting a new session...");
                 new Thread(new HandleASession(player1, player2)).start();
