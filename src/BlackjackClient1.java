@@ -26,7 +26,7 @@ public class BlackjackClient1 extends Application {
         btRegister.setOnAction(new ButtonListener());
 
         Scene scene = new Scene(pane, 450, 200);
-        stage.setTitle("StudentClient");
+        stage.setTitle("BlackjackClient");
         stage.setScene(scene);
         stage.show();
     }
