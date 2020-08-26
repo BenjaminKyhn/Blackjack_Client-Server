@@ -10,13 +10,13 @@ public class BlackjackServer {
 
     public static void main(String[] args) {
         new Thread(() ->{
-            new StudentServer();
+            new BlackjackServer();
         }).start();
     }
 
     public BlackjackServer() {
         try {
-            ServerSocket serverSocket = new ServerSocket(8003);
+            ServerSocket serverSocket = new ServerSocket(8015);
             System.out.println("Server started ");
 
             while (true) {
@@ -52,10 +52,10 @@ public class BlackjackServer {
                 int clientNo = inputFromClient.readInt();
                 System.out.println("Client no: " + clientNo);
 
-                StudentAddress object = (StudentAddress) inputFromClient.readObject();
+                Card object = (Card) inputFromClient.readObject();
 
                 outputToClient.writeObject(object);
-                System.out.println(object.getName() + " sent back to the client");
+                System.out.println(object.getValue() + " sent back to the client");
             } catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();
             }
