@@ -67,19 +67,20 @@ public class BlackjackClient1 {
 
                 if (handValue < 21) {
                     System.out.println("Do you want to HIT or STAND?");
-                    String answer = "";
-                    while (true) {
-                        answer = input.nextLine();
-                        if (answer.toLowerCase().equals("hit") || answer.toLowerCase().equals("stand"))
-                            break;
-                    }
+                    String answer = input.nextLine();
                     toServer.writeObject(answer);
-                    if (answer.toLowerCase().equals("hit")){
-                        hitCount++;
-                        myHand.add((Card) fromServer.readObject());
-                        handValue += myHand.get(hitCount + 1).getValue();
-                        System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
-                                myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue));
+                    while (!answer.toLowerCase().equals("stand")) {
+                        if (answer.toLowerCase().equals("hit")) {
+                            hitCount++;
+                            myHand.add((Card) fromServer.readObject());
+                            handValue += myHand.get(hitCount + 1).getValue();
+                            System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
+                                    myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue));
+                        }
+                        else
+                            System.out.println("Please type hit or stand.");
+                        answer = input.nextLine();
+                        toServer.writeObject(answer);
                     }
                 }
             } catch (Exception e) {

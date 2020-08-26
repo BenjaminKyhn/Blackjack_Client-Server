@@ -6,7 +6,7 @@ import java.util.Date;
 
 // Brug synchronized Deck for at undgå race conditions
 
-public class BlackjackServer implements BlackjackConstants{
+public class BlackjackServer implements BlackjackConstants {
     private ObjectInputStream fromPlayer1;
     private ObjectOutputStream toPlayer1;
     private ObjectInputStream fromPlayer2;
@@ -81,17 +81,36 @@ public class BlackjackServer implements BlackjackConstants{
                 int player1HitCount = 0;
                 int player2HitCount = 0;
 
+                // Read moves from player 1
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
-
                 String answerPlayer1 = (String) fromPlayer1.readObject();
-                if (answerPlayer1.toLowerCase().equals("hit")){
-                    System.out.println("Player 1 chose hit. Drawing a new card and waiting for next answer...");
-                    player1HitCount++;
-                    player1Hand.add(deck.draw());
-                    toPlayer1.writeObject(player1Hand.get(player1HitCount + 1));
+                while (!answerPlayer1.toLowerCase().equals("stand")) {
+                    if (answerPlayer1.toLowerCase().equals("hit")) {
+                        player1HitCount++;
+                        System.out.println("Player 1 chose hit. Drawing a new card and waiting for next answer...");
+                        player1Hand.add(deck.draw());
+                        toPlayer1.writeObject(player1Hand.get(player1HitCount + 1));
+                    } else
+                        System.out.println("Please type hit or stand.");
+                    answerPlayer1 = (String) fromPlayer1.readObject();
                 }
-                else
-                    System.out.println("Player 1 chose to stand.");
+
+                // Read moves from player 2
+                System.out.println("Player 1 chose to stand. Waiting for player 2 to make a move...");
+                String answerPlayer2 = (String) fromPlayer2.readObject();
+                while (!answerPlayer2.toLowerCase().equals("stand")) {
+                    if (answerPlayer2.toLowerCase().equals("hit")) {
+                        player2HitCount++;
+                        System.out.println("Player 2 chose hit. Drawing a new card and waiting for next answer...");
+                        player2Hand.add(deck.draw());
+                        toPlayer2.writeObject(player2Hand.get(player2HitCount + 1));
+                    } else
+                        System.out.println("Please type hit or stand.");
+                    answerPlayer2 = (String) fromPlayer2.readObject();
+                }
+
+                System.out.println("Player 2 chose to stand. Both players are finished playing");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
