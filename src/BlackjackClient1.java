@@ -3,6 +3,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class BlackjackClient1 {
     private ObjectInputStream fromServer;
@@ -45,15 +46,42 @@ public class BlackjackClient1 {
                 otherPlayerHand.add((Card) fromServer.readObject());
                 dealerHand.add((Card) fromServer.readObject());
 
+                int hitCount = 0;
+
+                int handValue = 0;
+                for (int i = 0; i < myHand.size(); i++) {
+                    handValue += myHand.get(i).getValue();
+                }
+
                 System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(1).getSuit() +
-                        " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". The value of your hand is " +
-                        (myHand.get(0).getValue() + myHand.get(1).getValue()) + ".");
+                        " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
+                        (handValue) + ".");
                 System.out.println("The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +
                         otherPlayerHand.get(0).getSuit() + " and " + otherPlayerHand.get(1).getRank() + " of " +
-                        otherPlayerHand.get(1).getSuit() + ". The value of his hand is " + (otherPlayerHand.get(0).getValue() +
+                        otherPlayerHand.get(1).getSuit() + ". Value of his hand is " + (otherPlayerHand.get(0).getValue() +
                         otherPlayerHand.get(1).getValue()) + ".");
                 System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
-                        " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".");
+                        " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
+
+                Scanner input = new Scanner(System.in);
+
+                if (handValue < 21) {
+                    System.out.println("Do you want to HIT or STAND?");
+                    String answer = "";
+                    while (true) {
+                        answer = input.nextLine();
+                        if (answer.toLowerCase().equals("hit") || answer.toLowerCase().equals("stand"))
+                            break;
+                    }
+                    toServer.writeObject(answer);
+                    if (answer.toLowerCase().equals("hit")){
+                        hitCount++;
+                        myHand.add((Card) fromServer.readObject());
+                        handValue += myHand.get(hitCount + 1).getValue();
+                        System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
+                                myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue));
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

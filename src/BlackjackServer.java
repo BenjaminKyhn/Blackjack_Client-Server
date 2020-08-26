@@ -78,6 +78,20 @@ public class BlackjackServer implements BlackjackConstants{
                 toPlayer2.writeObject(player1Hand.get(1));
                 toPlayer2.writeObject(dealerHand.get(0));
 
+                int player1HitCount = 0;
+                int player2HitCount = 0;
+
+                System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
+
+                String answerPlayer1 = (String) fromPlayer1.readObject();
+                if (answerPlayer1.toLowerCase().equals("hit")){
+                    System.out.println("Player 1 chose hit. Drawing a new card and waiting for next answer...");
+                    player1HitCount++;
+                    player1Hand.add(deck.draw());
+                    toPlayer1.writeObject(player1Hand.get(player1HitCount + 1));
+                }
+                else
+                    System.out.println("Player 1 chose to stand.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
