@@ -61,6 +61,8 @@ public class BlackjackServer {
 
                 toPlayer1.writeObject(card1);
                 toPlayer2.writeObject(card2);
+
+                toPlayer1.writeObject(1);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }

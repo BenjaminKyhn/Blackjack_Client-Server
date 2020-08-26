@@ -40,6 +40,9 @@ public class BlackjackClient1 {
                 Card card = (Card) fromServer.readObject();
 
                 System.out.println(card.getValue());
+
+                int memes = (int)fromServer.readObject();
+                System.out.println(memes);
             } catch (Exception e){
                 e.printStackTrace();
             }
