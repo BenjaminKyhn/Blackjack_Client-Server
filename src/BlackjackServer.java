@@ -5,9 +5,6 @@ import java.net.Socket;
 // Brug synchronized Deck for at undgå race conditions
 
 public class BlackjackServer {
-    private ObjectOutputStream outputToClient;
-    private ObjectInputStream inputFromClient;
-
     public static void main(String[] args) {
         new Thread(() ->{
             new BlackjackServer();
@@ -21,19 +18,16 @@ public class BlackjackServer {
 
             while (true) {
                 Socket player1 = serverSocket.accept();
-                Socket player2 = serverSocket.accept();
+                System.out.println("Player one connected.");
 
+                Socket player2 = serverSocket.accept();
+                System.out.println("Player two connected.");
+
+                System.out.println("Starting a new session...");
                 new Thread(new HandleASession(player1, player2)).start();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                inputFromClient.close();
-                outputToClient.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
         }
     }
 

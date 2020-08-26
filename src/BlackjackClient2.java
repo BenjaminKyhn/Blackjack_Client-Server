@@ -21,6 +21,8 @@ public class BlackjackClient2 {
         try {
             Socket socket = new Socket(host, port);
 
+            System.out.println("Connected to server. Waiting for other player...");
+
             fromServer = new ObjectInputStream(socket.getInputStream());
             toServer = new ObjectOutputStream(socket.getOutputStream());
         }
@@ -30,6 +32,7 @@ public class BlackjackClient2 {
 
         new Thread(() -> {
             try {
+
                 toServer.writeInt(2);
 
                 Card s = new Card("Ace", "Diamonds");
