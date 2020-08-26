@@ -6,7 +6,8 @@ import java.net.Socket;
 public class BlackjackClient1 {
     private ObjectInputStream fromServer;
     private ObjectOutputStream toServer;
-    String host = "localhost";
+    private String host = "localhost";
+    private int port = 8015;
 
     public static void main(String[] args) {
         new BlackjackClient1();
@@ -18,7 +19,7 @@ public class BlackjackClient1 {
 
     public void connectToServer(){
         try {
-            Socket socket = new Socket(host, 8015);
+            Socket socket = new Socket(host, port);
 
             fromServer = new ObjectInputStream(socket.getInputStream());
             toServer = new ObjectOutputStream(socket.getOutputStream());
