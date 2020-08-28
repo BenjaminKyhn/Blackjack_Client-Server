@@ -58,7 +58,7 @@ public class BlackjackClient2 {
                     handValue += myHand.get(i).getValue();
                 }
 
-                System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(1).getSuit() +
+                System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
                         " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
                         (handValue) + ".");
                 System.out.println("The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +

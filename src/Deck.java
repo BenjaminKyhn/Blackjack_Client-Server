@@ -14,7 +14,7 @@ public class Deck {
         shuffle(cards);
     }
 
-    public void shuffle(ArrayList<Card> cards){
+    public synchronized void shuffle(ArrayList<Card> cards){
         Collections.shuffle(cards);
     }
 
