@@ -11,6 +11,7 @@ public class BlackjackServer implements BlackjackConstants {
     private ObjectOutputStream toPlayer1;
     private ObjectInputStream fromPlayer2;
     private ObjectOutputStream toPlayer2;
+    private int numberOfPlayers = 2;
 
     public static void main(String[] args) {
         new BlackjackServer();
@@ -26,13 +27,15 @@ public class BlackjackServer implements BlackjackConstants {
                 System.out.println("Player one connected.");
                 toPlayer1 = new ObjectOutputStream(player1.getOutputStream());
                 fromPlayer1 = new ObjectInputStream(player1.getInputStream());
-                toPlayer1.writeObject(PLAYER1);
+                toPlayer1.writeObject(PLAYER1); // send player number
+                toPlayer1.writeObject(numberOfPlayers); // send number of players in the game
 
                 Socket player2 = serverSocket.accept();
                 System.out.println("Player two connected.");
                 toPlayer2 = new ObjectOutputStream(player2.getOutputStream());
                 fromPlayer2 = new ObjectInputStream(player2.getInputStream());
-                toPlayer2.writeObject(PLAYER2);
+                toPlayer2.writeObject(PLAYER2); // send player number
+                toPlayer1.writeObject(numberOfPlayers); // send number of players in the game
 
                 System.out.println("Game session started for two players");
                 new Thread(new HandleASession(player1, player2)).start();

@@ -11,6 +11,7 @@ public class BlackjackClient1 {
     private String host = "localhost";
     private int port = 8015;
     private int player;
+    private int numberOfPlayers;
 
     public static void main(String[] args) {
         new BlackjackClient1();
@@ -28,7 +29,9 @@ public class BlackjackClient1 {
             toServer = new ObjectOutputStream(socket.getOutputStream());
 
             player = (int) fromServer.readObject();
-            System.out.println("Connected to Server. You are player " + player + ".");
+            numberOfPlayers = (int) fromServer.readObject();
+            System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
+                            " and you are player " + player + ".");
             if (player == 1) {
                 System.out.println("Waiting for other player...\n");
             }
