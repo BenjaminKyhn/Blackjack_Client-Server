@@ -33,8 +33,9 @@ public class BlackjackClient1 {
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
                             "and you are player " + player + ".");
             if (player == 1) {
-                System.out.println("Waiting for more players...\n");
+                System.out.println("Waiting for more players...");
             }
+            System.out.println();
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }

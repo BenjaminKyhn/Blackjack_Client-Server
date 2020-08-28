@@ -58,48 +58,37 @@ public class BlackjackServer implements BlackjackConstants {
                 Deck deck = new Deck();
                 ArrayList<ArrayList<Card>> playerHands = new ArrayList<>();
                 ArrayList<Card> dealerHand = new ArrayList<>();
-                ArrayList<Card> player1Hand = new ArrayList<>();
-                ArrayList<Card> player2Hand = new ArrayList<>();
-
-                player1Hand.add(deck.draw());
-                player1Hand.add(deck.draw());
-                playerHands.add(player1Hand);
-
-                player2Hand.add(deck.draw());
-                player2Hand.add(deck.draw());
-                playerHands.add(player2Hand);
-
+                
+                // Generate player hands and contain them in a list. The dealer's hand is the last element of the list.
+                for (int i = 0; i < numberOfPlayers; i++) {
+                    ArrayList<Card> hand = new ArrayList<>();
+                    hand.add(deck.draw());
+                    hand.add(deck.draw());
+                    playerHands.add(hand);
+                }
+                
                 dealerHand.add(deck.draw());
                 dealerHand.add(deck.draw());
-                playerHands.add(dealerHand);
 
-                toPlayers.get(0).writeObject(player1Hand.get(0));
-                toPlayers.get(0).writeObject(player1Hand.get(1));
-                toPlayers.get(0).writeObject(player2Hand.get(0));
-                toPlayers.get(0).writeObject(player2Hand.get(1));
+                toPlayers.get(0).writeObject(playerHands.get(0).get(0));
+                toPlayers.get(0).writeObject(playerHands.get(0).get(1));
+                toPlayers.get(0).writeObject(playerHands.get(1).get(0));
+                toPlayers.get(0).writeObject(playerHands.get(1).get(1));
                 toPlayers.get(0).writeObject(dealerHand.get(0));
 
-                toPlayers.get(1).writeObject(player2Hand.get(0));
-                toPlayers.get(1).writeObject(player2Hand.get(1));
-                toPlayers.get(1).writeObject(player1Hand.get(0));
-                toPlayers.get(1).writeObject(player1Hand.get(1));
+                toPlayers.get(1).writeObject(playerHands.get(1).get(0));
+                toPlayers.get(1).writeObject(playerHands.get(1).get(1));
+                toPlayers.get(1).writeObject(playerHands.get(0).get(0));
+                toPlayers.get(1).writeObject(playerHands.get(0).get(1));
                 toPlayers.get(1).writeObject(dealerHand.get(0));
 
-                int player1HitCount = 0;
-                int player2HitCount = 0;
-                int hitCount = 0;
-
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
-
-                // fori loop that reads moves from a player i = amount of players
-                // This requires the Input and Output streams to be contained in a list, so you can iterate through them
 
                 // Read moves from players
                 for (int i = 0; i < numberOfPlayers; i++) {
                     String answer = (String) fromPlayers.get(i).readObject();
                     while (!answer.toLowerCase().equals("stand")) {
                         if (answer.toLowerCase().equals("hit")) {
-                            hitCount++;
                             System.out.println("Player " + (i + 1) + " chose to hit. Drawing a new card and waiting " +
                                     "for the next move...");
                             Card card = deck.draw();

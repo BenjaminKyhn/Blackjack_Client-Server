@@ -18,7 +18,7 @@ public class Deck {
         Collections.shuffle(cards);
     }
 
-    public Card draw(){
+    public synchronized Card draw(){
         Card card = cards.get(0);
         cards.remove(0);
         return card;
