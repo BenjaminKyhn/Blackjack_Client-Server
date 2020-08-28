@@ -98,7 +98,12 @@ public class BlackjackClient {
                                     myHand.add((Card) fromServer.readObject());
                                     handValue += myHand.get(hitCount + 1).getValue();
                                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
-                                            myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue) + ".");
+                                            myHand.get(hitCount + 1).getSuit() + ".");
+                                    if (handValue <= 21){
+                                        System.out.println("The value of your hand is " + (handValue) + ".");
+                                    }
+                                    else
+                                        System.out.println("You bust! The value of your hand is " + handValue + "!");
                                 }
                                 else
                                     System.out.println("Please type hit or stand.");
@@ -120,7 +125,12 @@ public class BlackjackClient {
                                 otherPlayerHand.add((Card) fromServer.readObject());
                                 otherPlayerHandValue += otherPlayerHand.get(hitCount + 1).getValue();
                                 System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
-                                        otherPlayerHand.get(hitCount + 1).getSuit() + ". The value of his hand is " + (otherPlayerHandValue) + ".");
+                                        otherPlayerHand.get(hitCount + 1).getSuit() + ".");
+                                if (otherPlayerHandValue <= 21){
+                                    System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
+                                }
+                                else
+                                    System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
                             }
                             answer = (String) fromServer.readObject();
                         }
