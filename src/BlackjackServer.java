@@ -141,7 +141,6 @@ public class BlackjackServer implements BlackjackConstants {
                 System.out.println("Both players are finished playing.");
 
                 //TODO: Show the dealers actions
-                //TODO: Add lose condition for players choosing to hit
 
             } catch (Exception e) {
                 e.printStackTrace();
