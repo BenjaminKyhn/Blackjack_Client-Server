@@ -72,31 +72,34 @@ public class BlackjackClient {
 
                 int playerTurn = (int) fromServer.readObject();
 
-                if (player == playerTurn)
-                    System.out.println("Your turn");
-                else
-                    System.out.println("Waiting for other players to take their move...");
-
                 Scanner input = new Scanner(System.in);
-                
-                if (handValue < 21) {
-                    System.out.println("Your turn. Do you want to HIT or STAND?");
-                    String answer = input.nextLine();
-                    toServer.writeObject(answer);
-                    while (!answer.toLowerCase().equals("stand")) {
-                        if (answer.toLowerCase().equals("hit")) {
-                            hitCount++;
-                            myHand.add((Card) fromServer.readObject());
-                            handValue += myHand.get(hitCount + 1).getValue();
-                            System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
-                                    myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue));
+
+                for (int i = 0; i < numberOfPlayers; i++) {
+                    if (playerTurn == player){
+                        if (handValue < 21) {
+                            System.out.println("Your turn. Do you want to HIT or STAND?");
+                            String answer = input.nextLine();
+                            toServer.writeObject(answer);
+                            while (!answer.toLowerCase().equals("stand")) {
+                                if (answer.toLowerCase().equals("hit")) {
+                                    hitCount++;
+                                    myHand.add((Card) fromServer.readObject());
+                                    handValue += myHand.get(hitCount + 1).getValue();
+                                    System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
+                                            myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue));
+                                }
+                                else
+                                    System.out.println("Please type hit or stand.");
+                                answer = input.nextLine();
+                                toServer.writeObject(answer);
+                            }
                         }
-                        else
-                            System.out.println("Please type hit or stand.");
-                        answer = input.nextLine();
-                        toServer.writeObject(answer);
+                    } else {
+                        System.out.println("Waiting for other players to take their turn...");
                     }
                 }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
