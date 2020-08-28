@@ -35,7 +35,7 @@ public class BlackjackServer implements BlackjackConstants {
                 toPlayer2 = new ObjectOutputStream(player2.getOutputStream());
                 fromPlayer2 = new ObjectInputStream(player2.getInputStream());
                 toPlayer2.writeObject(PLAYER2); // send player number
-                toPlayer1.writeObject(numberOfPlayers); // send number of players in the game
+                toPlayer2.writeObject(numberOfPlayers); // send number of players in the game
 
                 System.out.println("Game session started for two players");
                 new Thread(new HandleASession(player1, player2)).start();

@@ -31,9 +31,9 @@ public class BlackjackClient1 {
             player = (int) fromServer.readObject();
             numberOfPlayers = (int) fromServer.readObject();
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
-                            " and you are player " + player + ".");
+                            "and you are player " + player + ".");
             if (player == 1) {
-                System.out.println("Waiting for other player...\n");
+                System.out.println("Waiting for more players...\n");
             }
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();

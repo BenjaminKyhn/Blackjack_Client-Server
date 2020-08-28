@@ -11,29 +11,31 @@ public class BlackjackClient2 {
     private String host = "localhost";
     private int port = 8015;
     private int player;
+    private int numberOfPlayers;
 
     public static void main(String[] args) {
         new BlackjackClient2();
     }
 
-    public BlackjackClient2(){
+    public BlackjackClient2() {
         connectToServer();
     }
 
-    public void connectToServer(){
+    public void connectToServer() {
         try {
             Socket socket = new Socket(host, port);
 
             fromServer = new ObjectInputStream(socket.getInputStream());
             toServer = new ObjectOutputStream(socket.getOutputStream());
 
-            player = (int)fromServer.readObject();
-            System.out.println("Connected to Server. You are player " + player + ".");
-            if (player == 1){
-                System.out.println("Waiting for other player...\n");
+            player = (int) fromServer.readObject();
+            numberOfPlayers = (int) fromServer.readObject();
+            System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
+                    "and you are player " + player + ".");
+            if (player == 1) {
+                System.out.println("Waiting for more players...\n");
             }
-        }
-        catch (IOException | ClassNotFoundException ex){
+        } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
 
@@ -65,6 +67,8 @@ public class BlackjackClient2 {
                 System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                         " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
 
+                // fori loop that shows the players' actions and only let's you input moves if i = your player number
+
                 if (player != 1)
                     System.out.println("Waiting for player 1 to make his move...");
 
@@ -88,7 +92,7 @@ public class BlackjackClient2 {
                         toServer.writeObject(answer);
                     }
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
