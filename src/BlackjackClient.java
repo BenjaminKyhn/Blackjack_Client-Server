@@ -79,6 +79,7 @@ public class BlackjackClient {
                 for (int i = 0; i < numberOfPlayers; i++) {
                     playerTurn = (int) fromServer.readObject();
                     if (playerTurn == player){
+                        hitCount = 0;
                         if (handValue < 21) {
                             System.out.println("Your turn. Do you want to HIT or STAND?");
                             String answer = input.nextLine();
@@ -89,18 +90,18 @@ public class BlackjackClient {
                                     myHand.add((Card) fromServer.readObject());
                                     handValue += myHand.get(hitCount + 1).getValue();
                                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
-                                            myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue));
+                                            myHand.get(hitCount + 1).getSuit() + ". The value of your hand is " + (handValue) + ".");
                                 }
                                 else
                                     System.out.println("Please type hit or stand.");
                                 answer = input.nextLine();
                                 toServer.writeObject(answer);
                             }
-                            System.out.println("You chose to stand.");
-                            hitCount = 0;
+                            System.out.println("You chose to stand.\n");
                         }
                     } else {
                         System.out.println("Other player's turn.");
+                        hitCount = 0;
                         String answer = (String) fromServer.readObject();
                         while (!answer.toLowerCase().equals("stand")){
                             if (answer.toLowerCase().equals("hit")){
@@ -108,10 +109,11 @@ public class BlackjackClient {
                                 otherPlayerHand.add((Card) fromServer.readObject());
                                 otherPlayerHandValue += otherPlayerHand.get(hitCount + 1).getValue();
                                 System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
-                                        otherPlayerHand.get(hitCount + 1).getSuit() + ". The value of his hand is " + (otherPlayerHandValue));
+                                        otherPlayerHand.get(hitCount + 1).getSuit() + ". The value of his hand is " + (otherPlayerHandValue) + ".");
                             }
                             answer = (String) fromServer.readObject();
                         }
+                        System.out.println("The other player chose to stand.\n");
                     }
                 }
 

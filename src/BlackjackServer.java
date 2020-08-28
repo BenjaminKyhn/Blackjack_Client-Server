@@ -10,6 +10,7 @@ public class BlackjackServer implements BlackjackConstants {
     private ArrayList<ObjectInputStream> fromPlayers = new ArrayList<>();
     private ArrayList<ObjectOutputStream> toPlayers = new ArrayList<>();
     private int numberOfPlayers = 2;
+    private int currentPlayer;
 
     public static void main(String[] args) {
         new BlackjackServer();
@@ -86,11 +87,17 @@ public class BlackjackServer implements BlackjackConstants {
 
                 // Read moves from players
                 for (int i = 0; i < numberOfPlayers; i++) {
+                    currentPlayer = i + 1;
                     for (int j = 0; j < numberOfPlayers; j++) {
-                        toPlayers.get(j).writeObject(i + 1);
+                        toPlayers.get(j).writeObject(currentPlayer);
                     }
                     String answer = (String) fromPlayers.get(i).readObject();
-                    toPlayers.get(1).writeObject(answer); //// fix it later
+                    if (currentPlayer == 1){
+                        toPlayers.get(1).writeObject(answer);
+                    }
+                    if (currentPlayer == 2){
+                        toPlayers.get(0).writeObject(answer);
+                    }
                     while (!answer.toLowerCase().equals("stand")) {
                         if (answer.toLowerCase().equals("hit")) {
                             System.out.println("Player " + (i + 1) + " chose to hit. Drawing a new card and waiting " +
@@ -104,7 +111,12 @@ public class BlackjackServer implements BlackjackConstants {
                         else
                             System.out.println("Please type hit or stand.");
                         answer = (String) fromPlayers.get(i).readObject();
-                        toPlayers.get(1).writeObject(answer); //// fix it later
+                        if (currentPlayer == 1){
+                            toPlayers.get(1).writeObject(answer);
+                        }
+                        if (currentPlayer == 2){
+                            toPlayers.get(0).writeObject(answer);
+                        }
                     }
                     System.out.println("Stand");
                 }
