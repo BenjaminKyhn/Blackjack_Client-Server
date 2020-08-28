@@ -12,7 +12,7 @@ public class BlackjackClient {
     private int port = 8015;
     private int player;
     private int numberOfPlayers;
-    private boolean continueToPlay = true;
+    private boolean lost = false;
 
     public static void main(String[] args) {
         new BlackjackClient();
@@ -61,9 +61,10 @@ public class BlackjackClient {
                 int hitCount = 0;
                 int handValue = 0;
                 int otherPlayerHandValue = 0;
+                int dealerHandValue = 0;
 
                 // Keep track of the players' hand values
-                for (int i = 0; i < myHand.size(); i++) {
+                for (int i = 0; i < 2; i++) {
                     handValue += myHand.get(i).getValue();
                     otherPlayerHandValue += otherPlayerHand.get(i).getValue();
                 }
@@ -105,6 +106,7 @@ public class BlackjackClient {
                                     } else {
                                         System.out.println("You bust! The value of your hand is " + handValue + "!");
                                         answer = "bust";
+                                        lost = true;
                                     }
                                 } else
                                     System.out.println("Please type hit or stand.");
@@ -144,6 +146,32 @@ public class BlackjackClient {
                             System.out.println("The other player chose to stand.\n");
                     }
                 }
+
+                // Receive information about the dealer's hand
+                dealerHand.add((Card) fromServer.readObject());
+                dealerHandValue += dealerHand.get(0).getValue();
+                dealerHandValue += dealerHand.get(1).getValue();
+                System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
+                        " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
+                        ". The current value os his hand is " + dealerHandValue + ".");
+
+                // Observe moves from the dealer
+                while (dealerHandValue < 17) {
+                    Card card = (Card) fromServer.readObject();
+                    dealerHand.add(card);
+                    dealerHandValue += card.getValue();
+                    System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
+                            "of his hand is now " + dealerHandValue + ".");
+                    if (dealerHandValue > 21)
+                        System.out.println("The dealer bust!");
+                }
+
+                // Check who won
+                if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
+                        || (!lost && dealerHandValue == handValue && dealerHandValue <= 21))
+                    System.out.println("\nYOU LOSE! THE DEALER WINS");
+                else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue))
+                    System.out.println("\nYOU WIN!");
 
             } catch (Exception e) {
                 e.printStackTrace();

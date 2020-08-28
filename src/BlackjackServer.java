@@ -72,8 +72,12 @@ public class BlackjackServer implements BlackjackConstants {
                     playerHands.add(hand);
                 }
 
+                // Draw cards for the dealer
                 dealerHand.add(deck.draw());
                 dealerHand.add(deck.draw());
+
+                // Keep track of the dealer's hand value
+                int handValue = dealerHand.get(0).getValue() + dealerHand.get(1).getValue();
 
                 // Send information about player hands to player 1
                 toPlayers.get(0).writeObject(playerHands.get(0).get(0));
@@ -135,11 +139,28 @@ public class BlackjackServer implements BlackjackConstants {
                             toPlayers.get(0).writeObject(answer);
                         }
                     }
-                    System.out.println("Stand");
+                    System.out.println("The player stands.");
                 }
 
-                System.out.println("Both players are finished playing.");
+                // Send the dealer's other card to the players
+                for (int i = 0; i < numberOfPlayers; i++) {
+                    toPlayers.get(i).writeObject(dealerHand.get(1));
+                }
 
+                // Hit new cards if the handValue is below 17
+                while (handValue < 17){
+                    Card card = deck.draw();
+                    dealerHand.add(card);
+                    handValue += card.getValue();
+                    for (int i = 0; i < numberOfPlayers; i++) {
+                        toPlayers.get(i).writeObject(card);
+                    }
+                }
+
+                System.out.println("Game finished.");
+
+                //TODO: Disallow dealer from drawing anymore cards if both players already bust
+                //TODO: Fix Ace value
                 //TODO: Show the dealers actions
 
             } catch (Exception e) {
