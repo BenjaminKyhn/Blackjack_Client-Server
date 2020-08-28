@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class BlackjackClient2 {
+public class BlackjackClient {
     private ObjectInputStream fromServer;
     private ObjectOutputStream toServer;
     private String host = "localhost";
@@ -14,10 +14,10 @@ public class BlackjackClient2 {
     private int numberOfPlayers;
 
     public static void main(String[] args) {
-        new BlackjackClient2();
+        new BlackjackClient();
     }
 
-    public BlackjackClient2() {
+    public BlackjackClient() {
         connectToServer();
     }
 
@@ -31,7 +31,7 @@ public class BlackjackClient2 {
             player = (int) fromServer.readObject();
             numberOfPlayers = (int) fromServer.readObject();
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
-                    "and you are player " + player + ".");
+                            "and you are player " + player + ".");
             if (player == 1) {
                 System.out.println("Waiting for more players...");
             }
