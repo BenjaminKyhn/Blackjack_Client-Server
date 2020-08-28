@@ -52,10 +52,12 @@ public class BlackjackClient {
                 dealerHand.add((Card) fromServer.readObject());
 
                 int hitCount = 0;
-
                 int handValue = 0;
+                int otherPlayerHandValue = 0;
+
                 for (int i = 0; i < myHand.size(); i++) {
                     handValue += myHand.get(i).getValue();
+                    otherPlayerHandValue += otherPlayerHand.get(i).getValue();
                 }
 
                 System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
@@ -95,9 +97,21 @@ public class BlackjackClient {
                                 toServer.writeObject(answer);
                             }
                             System.out.println("You chose to stand.");
+                            hitCount = 0;
                         }
                     } else {
-                        System.out.println("Waiting for other players to take their turn...");
+                        System.out.println("Other player's turn.");
+                        String answer = (String) fromServer.readObject();
+                        while (!answer.toLowerCase().equals("stand")){
+                            if (answer.toLowerCase().equals("hit")){
+                                hitCount++;
+                                otherPlayerHand.add((Card) fromServer.readObject());
+                                otherPlayerHandValue += otherPlayerHand.get(hitCount + 1).getValue();
+                                System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
+                                        otherPlayerHand.get(hitCount + 1).getSuit() + ". The value of his hand is " + (otherPlayerHandValue));
+                            }
+                            answer = (String) fromServer.readObject();
+                        }
                     }
                 }
 

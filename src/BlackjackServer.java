@@ -90,17 +90,21 @@ public class BlackjackServer implements BlackjackConstants {
                         toPlayers.get(j).writeObject(i + 1);
                     }
                     String answer = (String) fromPlayers.get(i).readObject();
+                    toPlayers.get(1).writeObject(answer); //// fix it later
                     while (!answer.toLowerCase().equals("stand")) {
                         if (answer.toLowerCase().equals("hit")) {
                             System.out.println("Player " + (i + 1) + " chose to hit. Drawing a new card and waiting " +
                                     "for the next move...");
                             Card card = deck.draw();
                             playerHands.get(i).add(card);
-                            toPlayers.get(i).writeObject(card);
+                            for (int j = 0; j < numberOfPlayers; j++) {
+                                toPlayers.get(j).writeObject(card);
+                            }
                         }
                         else
                             System.out.println("Please type hit or stand.");
                         answer = (String) fromPlayers.get(i).readObject();
+                        toPlayers.get(1).writeObject(answer); //// fix it later
                     }
                     System.out.println("Stand");
                 }
