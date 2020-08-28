@@ -10,6 +10,7 @@ public class BlackjackClient1 {
     private ObjectOutputStream toServer;
     private String host = "localhost";
     private int port = 8015;
+    private int player;
 
     public static void main(String[] args) {
         new BlackjackClient1();
@@ -26,7 +27,7 @@ public class BlackjackClient1 {
             fromServer = new ObjectInputStream(socket.getInputStream());
             toServer = new ObjectOutputStream(socket.getOutputStream());
 
-            int player = (int) fromServer.readObject();
+            player = (int) fromServer.readObject();
             System.out.println("Connected to Server. You are player " + player + ".");
             if (player == 1) {
                 System.out.println("Waiting for other player...\n");
@@ -63,10 +64,13 @@ public class BlackjackClient1 {
                 System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                         " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
 
+                if (player != 1)
+                    System.out.println("Waiting for player 1 to make his move...");
+
                 Scanner input = new Scanner(System.in);
 
                 if (handValue < 21) {
-                    System.out.println("Do you want to HIT or STAND?");
+                    System.out.println("Your turn. Do you want to HIT or STAND?");
                     String answer = input.nextLine();
                     toServer.writeObject(answer);
                     while (!answer.toLowerCase().equals("stand")) {
