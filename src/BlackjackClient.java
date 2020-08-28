@@ -104,13 +104,11 @@ public class BlackjackClient {
                                         System.out.println("The value of your hand is " + (handValue) + ".");
                                     } else {
                                         System.out.println("You bust! The value of your hand is " + handValue + "!");
-                                        continueToPlay = false;
+                                        answer = "bust";
                                     }
                                 } else
                                     System.out.println("Please type hit or stand.");
-                                if (!continueToPlay)
-                                    answer = "bust";
-                                else
+                                if (!answer.toLowerCase().equals("bust"))
                                     answer = input.nextLine();
                                 toServer.writeObject(answer);
                             }
