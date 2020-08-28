@@ -104,7 +104,6 @@ public class BlackjackClient {
                                         System.out.println("The value of your hand is " + (handValue) + ".");
                                     } else {
                                         System.out.println("You bust! The value of your hand is " + handValue + "!");
-                                        System.out.println("YOU LOSE.");
                                         answer = "bust";
                                     }
                                 } else
@@ -113,7 +112,10 @@ public class BlackjackClient {
                                     answer = input.nextLine();
                                 toServer.writeObject(answer);
                             }
-                            System.out.println("You chose to stand.\n");
+                            if (answer.toLowerCase().equals("bust"))
+                                System.out.println("YOU LOSE.\n");
+                            else
+                                System.out.println("You chose to stand.\n");
                         }
                     }
 
@@ -136,10 +138,12 @@ public class BlackjackClient {
                             }
                             answer = (String) fromServer.readObject();
                         }
-                        System.out.println("The other player chose to stand.\n");
+                        if (answer.toLowerCase().equals("bust"))
+                            System.out.println("The other player has lost.\n");
+                        else
+                            System.out.println("The other player chose to stand.\n");
                     }
                 }
-
 
             } catch (Exception e) {
                 e.printStackTrace();
