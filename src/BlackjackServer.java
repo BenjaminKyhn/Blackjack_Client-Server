@@ -58,28 +58,31 @@ public class BlackjackServer implements BlackjackConstants {
                 Deck deck = new Deck();
                 ArrayList<ArrayList<Card>> playerHands = new ArrayList<>();
                 ArrayList<Card> dealerHand = new ArrayList<>();
-                
-                // Generate player hands and contain them in a list. The dealer's hand is the last element of the list.
-                for (int i = 0; i < numberOfPlayers; i++) {
-                    ArrayList<Card> hand = new ArrayList<>();
-                    hand.add(deck.draw());
-                    hand.add(deck.draw());
-                    playerHands.add(hand);
-                }
-                
-                dealerHand.add(deck.draw());
-                dealerHand.add(deck.draw());
+                ArrayList<Card> player1Hand = new ArrayList<>();
+                ArrayList<Card> player2Hand = new ArrayList<>();
 
-                toPlayers.get(0).writeObject(playerHands.get(0).get(0));
-                toPlayers.get(0).writeObject(playerHands.get(0).get(1));
-                toPlayers.get(0).writeObject(playerHands.get(1).get(0));
-                toPlayers.get(0).writeObject(playerHands.get(1).get(1));
+                player1Hand.add(deck.draw());
+                player1Hand.add(deck.draw());
+                playerHands.add(player1Hand);
+
+                player2Hand.add(deck.draw());
+                player2Hand.add(deck.draw());
+                playerHands.add(player2Hand);
+
+                dealerHand.add(deck.draw());
+                dealerHand.add(deck.draw());
+                playerHands.add(dealerHand);
+
+                toPlayers.get(0).writeObject(player1Hand.get(0));
+                toPlayers.get(0).writeObject(player1Hand.get(1));
+                toPlayers.get(0).writeObject(player2Hand.get(0));
+                toPlayers.get(0).writeObject(player2Hand.get(1));
                 toPlayers.get(0).writeObject(dealerHand.get(0));
 
-                toPlayers.get(1).writeObject(playerHands.get(1).get(0));
-                toPlayers.get(1).writeObject(playerHands.get(1).get(1));
-                toPlayers.get(1).writeObject(playerHands.get(0).get(0));
-                toPlayers.get(1).writeObject(playerHands.get(0).get(1));
+                toPlayers.get(1).writeObject(player2Hand.get(0));
+                toPlayers.get(1).writeObject(player2Hand.get(1));
+                toPlayers.get(1).writeObject(player1Hand.get(0));
+                toPlayers.get(1).writeObject(player1Hand.get(1));
                 toPlayers.get(1).writeObject(dealerHand.get(0));
 
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
