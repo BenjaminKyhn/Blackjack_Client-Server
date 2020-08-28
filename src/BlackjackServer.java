@@ -161,7 +161,7 @@ public class BlackjackServer implements BlackjackConstants {
 
                 //TODO: Disallow dealer from drawing anymore cards if both players already bust
                 //TODO: Fix Ace value
-                //TODO: Show the dealers actions
+                //TODO: Handle more than one session
 
             } catch (Exception e) {
                 e.printStackTrace();
