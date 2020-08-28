@@ -56,16 +56,22 @@ public class BlackjackServer implements BlackjackConstants {
         public void run() {
             try {
                 Deck deck = new Deck();
+                ArrayList<ArrayList<Card>> playerHands = new ArrayList<>();
                 ArrayList<Card> dealerHand = new ArrayList<>();
                 ArrayList<Card> player1Hand = new ArrayList<>();
                 ArrayList<Card> player2Hand = new ArrayList<>();
 
                 player1Hand.add(deck.draw());
                 player1Hand.add(deck.draw());
+                playerHands.add(player1Hand);
+
                 player2Hand.add(deck.draw());
                 player2Hand.add(deck.draw());
+                playerHands.add(player2Hand);
+
                 dealerHand.add(deck.draw());
                 dealerHand.add(deck.draw());
+                playerHands.add(dealerHand);
 
                 toPlayers.get(0).writeObject(player1Hand.get(0));
                 toPlayers.get(0).writeObject(player1Hand.get(1));
@@ -81,40 +87,31 @@ public class BlackjackServer implements BlackjackConstants {
 
                 int player1HitCount = 0;
                 int player2HitCount = 0;
+                int hitCount = 0;
 
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
 
                 // fori loop that reads moves from a player i = amount of players
                 // This requires the Input and Output streams to be contained in a list, so you can iterate through them
 
-                // Read moves from player 1
-                String answerPlayer1 = (String) fromPlayers.get(0).readObject();
-                while (!answerPlayer1.toLowerCase().equals("stand")) {
-                    if (answerPlayer1.toLowerCase().equals("hit")) {
-                        player1HitCount++;
-                        System.out.println("Player 1 chose hit. Drawing a new card and waiting for next answer...");
-                        player1Hand.add(deck.draw());
-                        toPlayers.get(0).writeObject(player1Hand.get(player1HitCount + 1));
-                    } else
-                        System.out.println("Please type hit or stand.");
-                    answerPlayer1 = (String) fromPlayers.get(0).readObject();
+                // Read moves from players
+                for (int i = 0; i < numberOfPlayers; i++) {
+                    String answer = (String) fromPlayers.get(i).readObject();
+                    while (!answer.toLowerCase().equals("stand")) {
+                        if (answer.toLowerCase().equals("hit")) {
+                            hitCount++;
+                            System.out.println("Player " + (i + 1) + " chose to hit. Drawing a new card and waiting " +
+                                    "for the next move...");
+                            Card card = deck.draw();
+                            playerHands.get(i).add(card);
+                            toPlayers.get(i).writeObject(card);
+                        } else
+                            System.out.println("Please type hit or stand.");
+                        answer = (String) fromPlayers.get(i).readObject();
+                    }
                 }
 
-                // Read moves from player 2
-                System.out.println("Player 1 chose to stand. Waiting for player 2 to make a move...");
-                String answerPlayer2 = (String) fromPlayers.get(1).readObject();
-                while (!answerPlayer2.toLowerCase().equals("stand")) {
-                    if (answerPlayer2.toLowerCase().equals("hit")) {
-                        player2HitCount++;
-                        System.out.println("Player 2 chose hit. Drawing a new card and waiting for next answer...");
-                        player2Hand.add(deck.draw());
-                        toPlayers.get(1).writeObject(player2Hand.get(player2HitCount + 1));
-                    } else
-                        System.out.println("Please type hit or stand.");
-                    answerPlayer2 = (String) fromPlayers.get(1).readObject();
-                }
-
-                System.out.println("Player 2 chose to stand. Both players are finished playing");
+                System.out.println("Both players are finished playing.");
 
                 //TODO: Send data to all connected players about the player currently playing
                 //TODO: Add lose condition for players choosing to hit
