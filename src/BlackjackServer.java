@@ -111,7 +111,7 @@ public class BlackjackServer implements BlackjackConstants {
                     }
 
                     // Handle hit and stand answers
-                    while (!answer.toLowerCase().equals("stand")) {
+                    while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                         if (answer.toLowerCase().equals("hit")) {
                             System.out.println("Player " + (i + 1) + " chose to hit. Drawing a new card and waiting " +
                                     "for the next move...");

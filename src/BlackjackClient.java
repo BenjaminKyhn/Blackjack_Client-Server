@@ -12,6 +12,7 @@ public class BlackjackClient {
     private int port = 8015;
     private int player;
     private int numberOfPlayers;
+    private boolean continueToPlay = true;
 
     public static void main(String[] args) {
         new BlackjackClient();
@@ -35,7 +36,7 @@ public class BlackjackClient {
             // Receive number of players in the session from the server
             numberOfPlayers = (int) fromServer.readObject();
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
-                            "and you are player " + player + ".");
+                    "and you are player " + player + ".");
             if (player == 1) {
                 System.out.println("Waiting for more players...");
             }
@@ -86,28 +87,31 @@ public class BlackjackClient {
                     playerTurn = (int) fromServer.readObject();
 
                     // Take own turn
-                    if (playerTurn == player){
+                    if (playerTurn == player) {
                         hitCount = 0;
                         if (handValue < 21) {
                             System.out.println("Your turn. Do you want to HIT or STAND?");
                             String answer = input.nextLine();
                             toServer.writeObject(answer);
-                            while (!answer.toLowerCase().equals("stand")) {
+                            while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                                 if (answer.toLowerCase().equals("hit")) {
                                     hitCount++;
                                     myHand.add((Card) fromServer.readObject());
                                     handValue += myHand.get(hitCount + 1).getValue();
                                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                                             myHand.get(hitCount + 1).getSuit() + ".");
-                                    if (handValue <= 21){
+                                    if (handValue <= 21) {
                                         System.out.println("The value of your hand is " + (handValue) + ".");
-                                    }
-                                    else
+                                    } else {
                                         System.out.println("You bust! The value of your hand is " + handValue + "!");
-                                }
-                                else
+                                        continueToPlay = false;
+                                    }
+                                } else
                                     System.out.println("Please type hit or stand.");
-                                answer = input.nextLine();
+                                if (!continueToPlay)
+                                    answer = "bust";
+                                else
+                                    answer = input.nextLine();
                                 toServer.writeObject(answer);
                             }
                             System.out.println("You chose to stand.\n");
@@ -119,17 +123,16 @@ public class BlackjackClient {
                         System.out.println("Other player's turn.");
                         hitCount = 0;
                         String answer = (String) fromServer.readObject();
-                        while (!answer.toLowerCase().equals("stand")){
-                            if (answer.toLowerCase().equals("hit")){
+                        while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
+                            if (answer.toLowerCase().equals("hit")) {
                                 hitCount++;
                                 otherPlayerHand.add((Card) fromServer.readObject());
                                 otherPlayerHandValue += otherPlayerHand.get(hitCount + 1).getValue();
                                 System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                                         otherPlayerHand.get(hitCount + 1).getSuit() + ".");
-                                if (otherPlayerHandValue <= 21){
+                                if (otherPlayerHandValue <= 21) {
                                     System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
-                                }
-                                else
+                                } else
                                     System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
                             }
                             answer = (String) fromServer.readObject();
