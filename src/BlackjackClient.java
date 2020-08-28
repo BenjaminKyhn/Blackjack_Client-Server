@@ -70,11 +70,12 @@ public class BlackjackClient {
 
                 // fori loop that shows the players' actions and only let's you input moves if i = your player number
 
-                int playerTurn = (int) fromServer.readObject();
+                int playerTurn;
 
                 Scanner input = new Scanner(System.in);
 
                 for (int i = 0; i < numberOfPlayers; i++) {
+                    playerTurn = (int) fromServer.readObject();
                     if (playerTurn == player){
                         if (handValue < 21) {
                             System.out.println("Your turn. Do you want to HIT or STAND?");
