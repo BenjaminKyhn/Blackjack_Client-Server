@@ -81,6 +81,8 @@ public class BlackjackServer implements BlackjackConstants {
                 int player1HitCount = 0;
                 int player2HitCount = 0;
 
+                // fori loop that reads moves from a player i = amount of players
+
                 // Read moves from player 1
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
                 String answerPlayer1 = (String) fromPlayer1.readObject();

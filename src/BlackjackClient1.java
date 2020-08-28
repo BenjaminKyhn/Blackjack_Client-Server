@@ -64,6 +64,8 @@ public class BlackjackClient1 {
                 System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                         " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
 
+                // fori loop that shows the players' actions and only let's you input moves if i = your player number
+
                 if (player != 1)
                     System.out.println("Waiting for player 1 to make his move...");
 
