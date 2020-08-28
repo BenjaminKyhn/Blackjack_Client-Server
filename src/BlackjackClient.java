@@ -104,6 +104,7 @@ public class BlackjackClient {
                                         System.out.println("The value of your hand is " + (handValue) + ".");
                                     } else {
                                         System.out.println("You bust! The value of your hand is " + handValue + "!");
+                                        System.out.println("YOU LOSE.");
                                         answer = "bust";
                                     }
                                 } else
