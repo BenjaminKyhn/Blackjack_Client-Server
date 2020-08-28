@@ -25,10 +25,14 @@ public class BlackjackClient {
         try {
             Socket socket = new Socket(host, port);
 
+            // Establish input- and output streams
             fromServer = new ObjectInputStream(socket.getInputStream());
             toServer = new ObjectOutputStream(socket.getOutputStream());
 
+            // Receive player number from server
             player = (int) fromServer.readObject();
+
+            // Receive number of players in the session from the server
             numberOfPlayers = (int) fromServer.readObject();
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
                             "and you are player " + player + ".");
@@ -42,6 +46,8 @@ public class BlackjackClient {
 
         new Thread(() -> {
             try {
+                // Start the game session
+                // Contain all players' cards in their own lists
                 ArrayList<Card> myHand = new ArrayList<>();
                 ArrayList<Card> otherPlayerHand = new ArrayList<>();
                 ArrayList<Card> dealerHand = new ArrayList<>();
@@ -55,11 +61,13 @@ public class BlackjackClient {
                 int handValue = 0;
                 int otherPlayerHandValue = 0;
 
+                // Keep track of the players' hand values
                 for (int i = 0; i < myHand.size(); i++) {
                     handValue += myHand.get(i).getValue();
                     otherPlayerHandValue += otherPlayerHand.get(i).getValue();
                 }
 
+                // Print out the current hand status of all players
                 System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
                         " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
                         (handValue) + ".");
@@ -70,14 +78,14 @@ public class BlackjackClient {
                 System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                         " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
 
-                // fori loop that shows the players' actions and only let's you input moves if i = your player number
-
                 int playerTurn;
-
                 Scanner input = new Scanner(System.in);
 
+                // Start the players' turns
                 for (int i = 0; i < numberOfPlayers; i++) {
                     playerTurn = (int) fromServer.readObject();
+
+                    // Take own turn
                     if (playerTurn == player){
                         hitCount = 0;
                         if (handValue < 21) {
@@ -99,7 +107,10 @@ public class BlackjackClient {
                             }
                             System.out.println("You chose to stand.\n");
                         }
-                    } else {
+                    }
+
+                    // Observe the other players' turns
+                    else {
                         System.out.println("Other player's turn.");
                         hitCount = 0;
                         String answer = (String) fromServer.readObject();
