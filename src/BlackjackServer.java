@@ -98,10 +98,12 @@ public class BlackjackServer implements BlackjackConstants {
                             Card card = deck.draw();
                             playerHands.get(i).add(card);
                             toPlayers.get(i).writeObject(card);
-                        } else
+                        }
+                        else
                             System.out.println("Please type hit or stand.");
                         answer = (String) fromPlayers.get(i).readObject();
                     }
+                    System.out.println("Stand");
                 }
 
                 System.out.println("Both players are finished playing.");

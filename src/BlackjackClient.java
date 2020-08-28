@@ -94,6 +94,7 @@ public class BlackjackClient {
                                 answer = input.nextLine();
                                 toServer.writeObject(answer);
                             }
+                            System.out.println("You chose to stand. Waiting for other players...");
                         }
                     } else {
                         System.out.println("Waiting for other players to take their turn...");
