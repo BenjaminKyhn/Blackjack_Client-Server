@@ -84,12 +84,11 @@ public class BlackjackServer implements BlackjackConstants {
 
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
 
-                for (int j = 0; j < numberOfPlayers; j++) {
-                    toPlayers.get(j).writeObject(1);
-                }
-
                 // Read moves from players
                 for (int i = 0; i < numberOfPlayers; i++) {
+                    for (int j = 0; j < numberOfPlayers; j++) {
+                        toPlayers.get(j).writeObject(i + 1);
+                    }
                     String answer = (String) fromPlayers.get(i).readObject();
                     while (!answer.toLowerCase().equals("stand")) {
                         if (answer.toLowerCase().equals("hit")) {

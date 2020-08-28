@@ -96,8 +96,9 @@ public class BlackjackClient {
                             }
                             System.out.println("You chose to stand.");
                         }
+                    } else {
+                        System.out.println("Waiting for other players to take their turn...");
                     }
-                    System.out.println("Waiting for other players to take their turn...");
                 }
 
 
