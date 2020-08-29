@@ -79,17 +79,10 @@ public class BlackjackClientFX extends Application {
         imageView3.xProperty().bind(imageView4.xProperty().subtract(card3.getWidth() + 25));
         imageView3.yProperty().bind(imageView4.yProperty());
 
-        imageView5.setX((pane.getWidth() / 2) - card5.getWidth() - 12.5);
+        imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract(card5.getWidth() + 12.5));
         imageView5.setY(50);
-        imageView6.setX((pane.getWidth() / 2) + 12.5);
+        imageView6.xProperty().bind(pane.widthProperty().divide(2).add(12.5));
         imageView6.setY(50);
-
-        // Set the position of UI elements to adjust to the screen size
-        ChangeListener<Number> redraw = (observable, oldValue, newValue) -> {
-            imageView5.setX((pane.getWidth() / 2) - card5.getWidth() - 12.5);
-            imageView6.setX((pane.getWidth() / 2) + 12.5);
-        };
-        pane.widthProperty().addListener(redraw);
 
         connectToServer();
     }
