@@ -103,6 +103,7 @@ public class BlackjackClient {
                                             myHand.get(hitCount + 1).getSuit() + ".");
                                     if (handValue <= 21) {
                                         System.out.println("The value of your hand is " + (handValue) + ".");
+                                        System.out.println("Do you want to HIT or STAND?");
                                     } else {
                                         System.out.println("You bust! The value of your hand is " + handValue + "!");
                                         answer = "bust";
