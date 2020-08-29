@@ -278,7 +278,6 @@ public class BlackjackClientFX extends Application {
     }
 
     private void takeTurn() throws IOException, ClassNotFoundException, InterruptedException {
-        Scanner input = new Scanner(System.in);
         hitCount = 0;
         if (handValue < 21) { // here
             System.out.println("Your turn. Do you want to HIT or STAND?");
@@ -359,6 +358,9 @@ public class BlackjackClientFX extends Application {
 
     private void observerOtherPlayer() throws IOException, ClassNotFoundException {
         System.out.println("Other player's turn.");
+        Platform.runLater(() -> {
+            messages.setText("Other player's turn.");
+        });
         hitCount = 0;
         if (otherPlayerHandValue < 21) {
             String answer = (String) fromServer.readObject();
@@ -369,20 +371,42 @@ public class BlackjackClientFX extends Application {
                     otherPlayerHandValue = calculateHandValue(otherPlayerHand);
                     System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                             otherPlayerHand.get(hitCount + 1).getSuit() + ".");
+                    Platform.runLater(() -> {
+                        messages.setText("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
+                                otherPlayerHand.get(hitCount + 1).getSuit() + ".");
+                    });
                     if (otherPlayerHandValue <= 21) {
                         System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
-                    } else
+                        Platform.runLater(() -> {
+                            messages.appendText("\nThe value of his hand is " + otherPlayerHandValue + ".");
+                        });
+                    } else {
                         System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
+                        Platform.runLater(() -> {
+                            messages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandValue + "!");
+                        });
+                    }
                 }
                 answer = (String) fromServer.readObject();
             }
             if (answer.toLowerCase().equals("bust")) {
                 System.out.println("The other player has lost.\n");
+                Platform.runLater(() -> {
+                    messages.setText("\nThe other player has lost.");
+                });
                 otherPlayerLost = true;
-            } else
+            } else {
                 System.out.println("The other player chose to stand.\n");
-        } else
+                Platform.runLater(() -> {
+                    messages.setText("\nThe other player chose to stand.");
+                });
+            }
+        } else {
             System.out.println("The other player hit natural Blackjack!");
+            Platform.runLater(() -> {
+                messages.setText("\n\nThe other player hit a natural Blackjack!");
+            });
+        }
     }
 
     private void receiveDealersHand() throws IOException, ClassNotFoundException {
