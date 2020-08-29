@@ -77,59 +77,7 @@ public class BlackjackServer implements BlackjackConstants {
 
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
 
-                // Read moves from players
-                for (int i = 0; i < numberOfPlayers; i++) {
-                    // Keep track of the current player
-                    currentPlayer = i + 1;
-                    // Let all players know who the current player is
-                    for (int j = 0; j < numberOfPlayers; j++) {
-                        toPlayers.get(j).writeObject(currentPlayer);
-                    }
-
-                    // Receive answers only if the player didn't hit 21
-                    if (handValues[i] < 21) {
-                        // Receive an answer from the current player
-                        String answer = (String) fromPlayers.get(i).readObject();
-
-                        // Send the answer to inactive players
-                        if (currentPlayer == 1) {
-                            toPlayers.get(1).writeObject(answer);
-                        }
-                        if (currentPlayer == 2) {
-                            toPlayers.get(0).writeObject(answer);
-                        }
-
-                        // Handle hit and stand answers
-                        while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
-                            if (answer.toLowerCase().equals("hit")) {
-                                System.out.println("Player " + (i + 1) + " chose to hit. Drawing a new card and waiting " +
-                                        "for the next move...");
-                                Card card = deck.draw();
-                                playerHands.get(i).add(card);
-                                for (int j = 0; j < numberOfPlayers; j++) {
-                                    toPlayers.get(j).writeObject(card);
-                                }
-                            } else
-                                System.out.println("Please type hit or stand.");
-
-                            // Receive an answer
-                            answer = (String) fromPlayers.get(i).readObject();
-
-                            // Send the answer to inactive players
-                            if (currentPlayer == 1) {
-                                toPlayers.get(1).writeObject(answer);
-                            }
-                            if (currentPlayer == 2) {
-                                toPlayers.get(0).writeObject(answer);
-                            }
-                        }
-                        if (answer.toLowerCase().equals("bust")) {
-                            System.out.println("The player bust.");
-                            playerLost[i] = true;
-                        } else
-                            System.out.println("The player stands.");
-                    }
-                }
+                readPlayerMoves(handValues, deck ,playerHands, playerLost);
 
                 // Send the dealer's other card to the players
                 for (int i = 0; i < numberOfPlayers; i++) {
@@ -208,6 +156,62 @@ public class BlackjackServer implements BlackjackConstants {
         toPlayers.get(1).writeObject(playerHands.get(0).get(0));
         toPlayers.get(1).writeObject(playerHands.get(0).get(1));
         toPlayers.get(1).writeObject(dealerHand.get(0));
+    }
+
+    private void readPlayerMoves(int[] handValues, Deck deck, ArrayList<ArrayList<Card>> playerHands,
+                                 boolean[] playerLost) throws IOException, ClassNotFoundException {
+        for (int i = 0; i < numberOfPlayers; i++) {
+            // Keep track of the current player
+            currentPlayer = i + 1;
+            // Let all players know who the current player is
+            for (int j = 0; j < numberOfPlayers; j++) {
+                toPlayers.get(j).writeObject(currentPlayer);
+            }
+
+            // Receive answers only if the player didn't hit 21
+            if (handValues[i] < 21) {
+                // Receive an answer from the current player
+                String answer = (String) fromPlayers.get(i).readObject();
+
+                // Send the answer to inactive players
+                if (currentPlayer == 1) {
+                    toPlayers.get(1).writeObject(answer);
+                }
+                if (currentPlayer == 2) {
+                    toPlayers.get(0).writeObject(answer);
+                }
+
+                // Handle hit and stand answers
+                while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
+                    if (answer.toLowerCase().equals("hit")) {
+                        System.out.println("Player " + (i + 1) + " chose to hit. Drawing a new card and waiting " +
+                                "for the next move...");
+                        Card card = deck.draw();
+                        playerHands.get(i).add(card);
+                        for (int j = 0; j < numberOfPlayers; j++) {
+                            toPlayers.get(j).writeObject(card);
+                        }
+                    } else
+                        System.out.println("Please type hit or stand.");
+
+                    // Receive an answer
+                    answer = (String) fromPlayers.get(i).readObject();
+
+                    // Send the answer to inactive players
+                    if (currentPlayer == 1) {
+                        toPlayers.get(1).writeObject(answer);
+                    }
+                    if (currentPlayer == 2) {
+                        toPlayers.get(0).writeObject(answer);
+                    }
+                }
+                if (answer.toLowerCase().equals("bust")) {
+                    System.out.println("The player bust.");
+                    playerLost[i] = true;
+                } else
+                    System.out.println("The player stands.");
+            }
+        }
     }
 
     // Method for determining Ace value and calculating total hand value
