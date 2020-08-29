@@ -75,7 +75,7 @@ public class BlackjackClientFX extends Application {
         startGame();
     }
 
-    public void startGame(){
+    public void startGame() {
         new Thread(() -> {
             try {
                 // Start the game session
@@ -104,75 +104,16 @@ public class BlackjackClientFX extends Application {
                         " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
 
                 int playerTurn;
-                Scanner input = new Scanner(System.in);
 
                 // Start the players' turns
                 for (int i = 0; i < numberOfPlayers; i++) {
                     playerTurn = (int) fromServer.readObject();
 
-                    // Take own turn
+                    // Take own turn and observer other players' turns
                     if (playerTurn == player) {
-                        hitCount = 0;
-                        if (handValue < 21) { // here
-                            System.out.println("Your turn. Do you want to HIT or STAND?");
-                            String answer = input.nextLine();
-                            toServer.writeObject(answer);
-                            while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
-                                if (answer.toLowerCase().equals("hit")) {
-                                    hitCount++;
-                                    myHand.add((Card) fromServer.readObject());
-                                    handValue = calculateHandValue(myHand);
-                                    System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
-                                            myHand.get(hitCount + 1).getSuit() + ".");
-                                    if (handValue <= 21) {
-                                        System.out.println("The value of your hand is " + (handValue) + ".");
-                                        System.out.println("Do you want to HIT or STAND?");
-                                    } else {
-                                        System.out.println("You bust! The value of your hand is " + handValue + "!");
-                                        answer = "bust";
-                                        lost = true;
-                                    }
-                                } else
-                                    System.out.println("Please type hit or stand.");
-                                if (!answer.toLowerCase().equals("bust"))
-                                    answer = input.nextLine();
-                                toServer.writeObject(answer);
-                            }
-                            if (answer.toLowerCase().equals("bust"))
-                                System.out.println("YOU LOSE.\n");
-                            else
-                                System.out.println("You chose to stand.\n");
-                        } else
-                            System.out.println("You hit natural Blackjack!");
-                    }
-
-                    // Observe the other players' turns
-                    else {
-                        System.out.println("Other player's turn.");
-                        hitCount = 0;
-                        if (otherPlayerHandValue < 21) {
-                            String answer = (String) fromServer.readObject();
-                            while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
-                                if (answer.toLowerCase().equals("hit")) {
-                                    hitCount++;
-                                    otherPlayerHand.add((Card) fromServer.readObject());
-                                    otherPlayerHandValue = calculateHandValue(otherPlayerHand);
-                                    System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
-                                            otherPlayerHand.get(hitCount + 1).getSuit() + ".");
-                                    if (otherPlayerHandValue <= 21) {
-                                        System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
-                                    } else
-                                        System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
-                                }
-                                answer = (String) fromServer.readObject();
-                            }
-                            if (answer.toLowerCase().equals("bust")) {
-                                System.out.println("The other player has lost.\n");
-                                otherPlayerLost = true;
-                            } else
-                                System.out.println("The other player chose to stand.\n");
-                        } else
-                            System.out.println("The other player hit natural Blackjack!");
+                        takeTurn();
+                    } else {
+                        observerOtherPlayer();
                     }
                 }
 
@@ -194,6 +135,70 @@ public class BlackjackClientFX extends Application {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void takeTurn() throws IOException, ClassNotFoundException {
+        Scanner input = new Scanner(System.in);
+        hitCount = 0;
+        if (handValue < 21) { // here
+            System.out.println("Your turn. Do you want to HIT or STAND?");
+            String answer = input.nextLine();
+            toServer.writeObject(answer);
+            while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
+                if (answer.toLowerCase().equals("hit")) {
+                    hitCount++;
+                    myHand.add((Card) fromServer.readObject());
+                    handValue = calculateHandValue(myHand);
+                    System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
+                            myHand.get(hitCount + 1).getSuit() + ".");
+                    if (handValue <= 21) {
+                        System.out.println("The value of your hand is " + (handValue) + ".");
+                        System.out.println("Do you want to HIT or STAND?");
+                    } else {
+                        System.out.println("You bust! The value of your hand is " + handValue + "!");
+                        answer = "bust";
+                        lost = true;
+                    }
+                } else
+                    System.out.println("Please type hit or stand.");
+                if (!answer.toLowerCase().equals("bust"))
+                    answer = input.nextLine();
+                toServer.writeObject(answer);
+            }
+            if (answer.toLowerCase().equals("bust"))
+                System.out.println("YOU LOSE.\n");
+            else
+                System.out.println("You chose to stand.\n");
+        } else
+            System.out.println("You hit natural Blackjack!");
+    }
+
+    private void observerOtherPlayer() throws IOException, ClassNotFoundException {
+        System.out.println("Other player's turn.");
+        hitCount = 0;
+        if (otherPlayerHandValue < 21) {
+            String answer = (String) fromServer.readObject();
+            while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
+                if (answer.toLowerCase().equals("hit")) {
+                    hitCount++;
+                    otherPlayerHand.add((Card) fromServer.readObject());
+                    otherPlayerHandValue = calculateHandValue(otherPlayerHand);
+                    System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
+                            otherPlayerHand.get(hitCount + 1).getSuit() + ".");
+                    if (otherPlayerHandValue <= 21) {
+                        System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
+                    } else
+                        System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
+                }
+                answer = (String) fromServer.readObject();
+            }
+            if (answer.toLowerCase().equals("bust")) {
+                System.out.println("The other player has lost.\n");
+                otherPlayerLost = true;
+            } else
+                System.out.println("The other player chose to stand.\n");
+        } else
+            System.out.println("The other player hit natural Blackjack!");
     }
 
     private void takeDealerTurn() throws IOException, ClassNotFoundException {
@@ -218,7 +223,7 @@ public class BlackjackClientFX extends Application {
         }
     }
 
-    private void checkForWin(){
+    private void checkForWin() {
         if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
                 || (!lost && dealerHandValue == handValue && dealerHandValue <= 21))
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
