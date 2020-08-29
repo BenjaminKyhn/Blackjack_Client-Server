@@ -39,6 +39,7 @@ public class BlackjackClientFX extends Application {
     private int playerTurn;
     private String answer = "";
 
+    private AnchorPane pane;
     private MyLabel dealerName;
     private MyLabel player1Name;
     private MyLabel player2Name;
@@ -64,7 +65,7 @@ public class BlackjackClientFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        AnchorPane pane = new AnchorPane();
+        pane = new AnchorPane();
 
         dealerName = new MyLabel("Dealer");
         player1Name = new MyLabel("Player 1");
@@ -278,6 +279,7 @@ public class BlackjackClientFX extends Application {
 
     private void takeTurn() throws IOException, ClassNotFoundException, InterruptedException {
         hitCount = 0;
+        answer = "";
         if (handValue < 21) { // here
             System.out.println("Your turn. Do you want to HIT or STAND?");
             Platform.runLater(() -> {
@@ -295,7 +297,9 @@ public class BlackjackClientFX extends Application {
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                 if (answer.toLowerCase().equals("hit")) {
                     hitCount++;
-                    myHand.add((Card) fromServer.readObject());
+                    Card card = (Card) fromServer.readObject();
+                    myHand.add(card);
+                    addCardToGUI(card, myHand.size(), true, false);
                     handValue = calculateHandValue(myHand);
                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                             myHand.get(hitCount + 1).getSuit() + ".");
@@ -367,6 +371,7 @@ public class BlackjackClientFX extends Application {
                 if (answer.toLowerCase().equals("hit")) {
                     hitCount++;
                     otherPlayerHand.add((Card) fromServer.readObject());
+                    addCardToGUI(otherPlayerHand.get(otherPlayerHand.size() - 1), otherPlayerHand.size(), false, false);
                     otherPlayerHandValue = calculateHandValue(otherPlayerHand);
                     System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                             otherPlayerHand.get(hitCount + 1).getSuit() + ".");
@@ -409,9 +414,16 @@ public class BlackjackClientFX extends Application {
     }
 
     private void receiveDealersHand() throws IOException, ClassNotFoundException {
-        dealerHand.add((Card) fromServer.readObject());
+        Card card = (Card) fromServer.readObject();
+        dealerHand.add(card);
         dealerHandValue += dealerHand.get(0).getValue();
         dealerHandValue += dealerHand.get(1).getValue();
+
+        Image cardImage = new Image("image/card/" + card.getNumber() + ".png");
+        Platform.runLater(() -> {
+            imageView5.setImage(cardImage);
+        });
+
         System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                 " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
                 ". The current value of his hand is " + dealerHandValue + ".");
@@ -448,7 +460,7 @@ public class BlackjackClientFX extends Application {
                     messages.setText("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                             "of his hand is now " + dealerHandValue + ".");
                 });
-                if (dealerHandValue > 21){
+                if (dealerHandValue > 21) {
                     System.out.println("The dealer bust!");
                     Platform.runLater(() -> {
                         messages.setText("The dealer bust!");
@@ -460,19 +472,17 @@ public class BlackjackClientFX extends Application {
 
     private void checkForWin() {
         if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
-                || (!lost && dealerHandValue == handValue && dealerHandValue <= 21)){
+                || (!lost && dealerHandValue == handValue && dealerHandValue <= 21)) {
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
             Platform.runLater(() -> {
                 messages.setText("YOU LOSE! THE DEALER WINS!");
             });
-        }
-        else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue)){
+        } else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue)) {
             System.out.println("\nYOU WIN!");
             Platform.runLater(() -> {
                 messages.setText("YOU WIN!");
             });
-        }
-        else if (lost && otherPlayerLost) {
+        } else if (lost && otherPlayerLost) {
             System.out.println("THE DEALER BEAT ALL PLAYERS!");
             Platform.runLater(() -> {
                 messages.setText("THE DEALER BEAT ALL PLAYERS!");
@@ -505,6 +515,37 @@ public class BlackjackClientFX extends Application {
         }
         return value;
     }
+
+    private void addCardToGUI(Card card, int handSize, boolean myCard, boolean dealerCard) {
+        Image cardImage = new Image("image/card/" + card.getNumber() + ".png");
+        ImageView cardImageView = new ImageView(cardImage);
+        Platform.runLater(() -> {
+            pane.getChildren().add(cardImageView);
+        });
+        if (dealerCard){
+            cardImageView.xProperty().bind(imageView5.xProperty().add(15 * (handSize - 1)));
+            cardImageView.yProperty().bind(imageView5.yProperty());
+        }
+        else if (player == 1) {
+            if (myCard) {
+                cardImageView.xProperty().bind(imageView1.xProperty().add(15 * (handSize - 1)));
+                cardImageView.yProperty().bind(imageView1.yProperty());
+            } else {
+                cardImageView.xProperty().bind(imageView3.xProperty().add(15 * (handSize - 1)));
+                cardImageView.yProperty().bind(imageView3.yProperty());
+            }
+
+        } else if (player == 2) {
+            if (myCard) {
+                cardImageView.xProperty().bind(imageView3.xProperty().add(15 * (handSize - 1)));
+                cardImageView.yProperty().bind(imageView3.yProperty());
+            } else {
+                cardImageView.xProperty().bind(imageView1.xProperty().add(15 * (handSize - 1)));
+                cardImageView.yProperty().bind(imageView1.yProperty());
+            }
+        }
+    }
 }
 
-// TODO: There was some error when the first player chose to stand immediately (index 3 out of bounds for length 3 from myHand ArrayList when using hitcount to access it line 304)
+//TODO: There was some error when the first player chose to stand immediately
+// Exception in thread "JavaFX Application Thread" java.lang.IndexOutOfBoundsException: Index 3 out of bounds for length 3 (line 307 using hitcount to access myHand)
