@@ -56,6 +56,12 @@ public class BlackjackServer implements BlackjackConstants {
         private Socket player1;
         private Socket player2;
         private boolean continueToPlay = true;
+        private ArrayList<ArrayList<Card>> playerHands = new ArrayList<>();
+        private ArrayList<Card> dealerHand = new ArrayList<>();
+        private int handValue;
+        private int[] handValues = new int[numberOfPlayers];
+        private boolean[] playerLost = new boolean[numberOfPlayers];
+        private Deck deck = new Deck();
 
         public HandleASession(Socket player1, Socket player2) {
             this.player1 = player1;
@@ -65,37 +71,7 @@ public class BlackjackServer implements BlackjackConstants {
         @Override
         public void run() {
             try {
-                // Keep track of player status (if he loses)
-                boolean[] playerLost = new boolean[numberOfPlayers];
-                for (int i = 0; i < numberOfPlayers; i++) {
-                    playerLost[i] = false;
-                }
-
-                // Create a new deck of cards
-                Deck deck = new Deck();
-
-                // Generate player hands and contain them in a list. The dealer's hand is the last element of the list.
-                ArrayList<ArrayList<Card>> playerHands = new ArrayList<>();
-                ArrayList<Card> dealerHand = new ArrayList<>();
-                for (int i = 0; i < numberOfPlayers; i++) {
-                    ArrayList<Card> hand = new ArrayList<>();
-                    hand.add(deck.draw());
-                    hand.add(deck.draw());
-                    playerHands.add(hand);
-                }
-
-                // Draw cards for the dealer
-                dealerHand.add(deck.draw());
-                dealerHand.add(deck.draw());
-
-                // Keep track of the dealer's hand value
-                int handValue = dealerHand.get(0).getValue() + dealerHand.get(1).getValue();
-                int[] handValues = new int[numberOfPlayers];
-                for (int i = 0; i < numberOfPlayers; i++) {
-                    handValues[i] = 0;
-                    handValues[i] += playerHands.get(i).get(0).getValue();
-                    handValues[i] += playerHands.get(i).get(1).getValue();
-                }
+                startGame(playerHands, dealerHand, handValues, handValue, playerLost, deck);
 
                 // Send information about player hands to player 1
                 toPlayers.get(0).writeObject(playerHands.get(0).get(0));
@@ -194,10 +170,39 @@ public class BlackjackServer implements BlackjackConstants {
                 System.out.println("Game finished.");
 
                 //TODO: Handle more than one session. Something about moving streams to the session.
+                //TODO: Fix dealer's opening hand able to be 22 if he has 2 aces (maybe all players?)
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void startGame(ArrayList<ArrayList<Card>> playerHands, ArrayList<Card> dealerHand, int[] handValues,
+                           int handValue, boolean[] playerLost, Deck deck){
+        // Keep track of player status (if he loses)
+        for (int i = 0; i < numberOfPlayers; i++) {
+            playerLost[i] = false;
+        }
+
+        // Generate player hands and contain them in a list.
+        for (int i = 0; i < numberOfPlayers; i++) {
+            ArrayList<Card> hand = new ArrayList<>();
+            hand.add(deck.draw());
+            hand.add(deck.draw());
+            playerHands.add(hand);
+        }
+
+        // Draw cards for the dealer
+        dealerHand.add(deck.draw());
+        dealerHand.add(deck.draw());
+
+        // Keep track of hand values
+        handValue = dealerHand.get(0).getValue() + dealerHand.get(1).getValue();
+        for (int i = 0; i < numberOfPlayers; i++) {
+            handValues[i] = 0;
+            handValues[i] += playerHands.get(i).get(0).getValue();
+            handValues[i] += playerHands.get(i).get(1).getValue();
         }
     }
 
