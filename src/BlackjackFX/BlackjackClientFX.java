@@ -32,6 +32,7 @@ public class BlackjackClientFX extends Application {
     private int handValue = 0;
     private int otherPlayerHandValue = 0;
     private int dealerHandValue = 0;
+    private int playerTurn;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -72,38 +73,14 @@ public class BlackjackClientFX extends Application {
             ex.printStackTrace();
         }
 
-        startGame();
+        playBlackjack();
     }
 
-    public void startGame() {
+    public void playBlackjack() {
         new Thread(() -> {
             try {
                 // Start the game session
-                // Contain all players' cards in their own lists
-                myHand.add((Card) fromServer.readObject());
-                myHand.add((Card) fromServer.readObject());
-                otherPlayerHand.add((Card) fromServer.readObject());
-                otherPlayerHand.add((Card) fromServer.readObject());
-                dealerHand.add((Card) fromServer.readObject());
-
-                // Keep track of the players' hand values
-                for (int i = 0; i < 2; i++) {
-                    handValue += myHand.get(i).getValue();
-                    otherPlayerHandValue += otherPlayerHand.get(i).getValue();
-                }
-
-                // Print out the current hand status of all players
-                System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
-                        " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
-                        (handValue) + ".");
-                System.out.println("The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +
-                        otherPlayerHand.get(0).getSuit() + " and " + otherPlayerHand.get(1).getRank() + " of " +
-                        otherPlayerHand.get(1).getSuit() + ". Value of his hand is " + (otherPlayerHand.get(0).getValue() +
-                        otherPlayerHand.get(1).getValue()) + ".");
-                System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
-                        " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
-
-                int playerTurn;
+                dealCards();
 
                 // Start the players' turns
                 for (int i = 0; i < numberOfPlayers; i++) {
@@ -118,12 +95,7 @@ public class BlackjackClientFX extends Application {
                 }
 
                 // Receive information about the dealer's hand
-                dealerHand.add((Card) fromServer.readObject());
-                dealerHandValue += dealerHand.get(0).getValue();
-                dealerHandValue += dealerHand.get(1).getValue();
-                System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
-                        " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
-                        ". The current value of his hand is " + dealerHandValue + ".");
+                receiveDealersHand();
 
                 // Observe moves from the dealer
                 takeDealerTurn();
@@ -135,6 +107,32 @@ public class BlackjackClientFX extends Application {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void dealCards() throws IOException, ClassNotFoundException {
+        // Contain all players' cards in their own lists
+        myHand.add((Card) fromServer.readObject());
+        myHand.add((Card) fromServer.readObject());
+        otherPlayerHand.add((Card) fromServer.readObject());
+        otherPlayerHand.add((Card) fromServer.readObject());
+        dealerHand.add((Card) fromServer.readObject());
+
+        // Keep track of the players' hand values
+        for (int i = 0; i < 2; i++) {
+            handValue += myHand.get(i).getValue();
+            otherPlayerHandValue += otherPlayerHand.get(i).getValue();
+        }
+
+        // Print out the current hand status of all players
+        System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
+                " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
+                (handValue) + ".");
+        System.out.println("The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +
+                otherPlayerHand.get(0).getSuit() + " and " + otherPlayerHand.get(1).getRank() + " of " +
+                otherPlayerHand.get(1).getSuit() + ". Value of his hand is " + (otherPlayerHand.get(0).getValue() +
+                otherPlayerHand.get(1).getValue()) + ".");
+        System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
+                " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
     }
 
     private void takeTurn() throws IOException, ClassNotFoundException {
@@ -199,6 +197,15 @@ public class BlackjackClientFX extends Application {
                 System.out.println("The other player chose to stand.\n");
         } else
             System.out.println("The other player hit natural Blackjack!");
+    }
+
+    private void receiveDealersHand() throws IOException, ClassNotFoundException {
+        dealerHand.add((Card) fromServer.readObject());
+        dealerHandValue += dealerHand.get(0).getValue();
+        dealerHandValue += dealerHand.get(1).getValue();
+        System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
+                " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
+                ". The current value of his hand is " + dealerHandValue + ".");
     }
 
     private void takeDealerTurn() throws IOException, ClassNotFoundException {
