@@ -69,16 +69,22 @@ public class BlackjackClientFX extends Application {
         stage.setScene(scene);
         stage.show();
 
+        // Adjust the position of player 1's UI elements
+        System.out.println(player1Name.getWidth());
         imageView1.xProperty().bind(pane.layoutXProperty().add(50));
         imageView1.yProperty().bind(pane.heightProperty().subtract(card1.getHeight() + 50));
         imageView2.xProperty().bind(imageView1.xProperty().add(card2.getWidth() + 25));
         imageView2.yProperty().bind(imageView1.yProperty());
+        player1Name.translateXProperty().bind(imageView2.xProperty().subtract((player1Name.getWidth() / 2) + 12.5));
+        player1Name.translateYProperty().bind(imageView2.yProperty().subtract(50));
 
+        // Adjust the position of player 2's UI elements
         imageView4.xProperty().bind(pane.widthProperty().subtract(card4.getWidth() + 50));
         imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
         imageView3.xProperty().bind(imageView4.xProperty().subtract(card3.getWidth() + 25));
         imageView3.yProperty().bind(imageView4.yProperty());
 
+        // Adjust the position of the dealer's UI elements
         imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract(card5.getWidth() + 12.5));
         imageView5.setY(50);
         imageView6.xProperty().bind(pane.widthProperty().divide(2).add(12.5));
