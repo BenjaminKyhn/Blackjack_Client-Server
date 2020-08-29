@@ -1,10 +1,17 @@
+package ConsoleBlackjack;
+
+import Model.BlackjackConstants;
+import Model.Card;
+import Model.Deck;
+import Model.Ranks;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 
-// Brug synchronized Deck for at undgå race conditions
+// Brug synchronized Model.Deck for at undgå race conditions
 
 public class BlackjackServer implements BlackjackConstants {
     private ArrayList<ObjectInputStream> fromPlayers = new ArrayList<>();
@@ -28,7 +35,7 @@ public class BlackjackServer implements BlackjackConstants {
                     System.out.println("Player one connected.");
                     toPlayers.add(new ObjectOutputStream(player1.getOutputStream()));
                     fromPlayers.add(new ObjectInputStream(player1.getInputStream()));
-                    toPlayers.get(0).writeObject(PLAYER1); // send player number
+                    toPlayers.get(0).writeObject(BlackjackConstants.PLAYER1); // send player number
                     toPlayers.get(0).writeObject(numberOfPlayers); // send number of players in the game
 
                     // Connect to player 2
@@ -36,7 +43,7 @@ public class BlackjackServer implements BlackjackConstants {
                     System.out.println("Player two connected.");
                     toPlayers.add(new ObjectOutputStream(player2.getOutputStream()));
                     fromPlayers.add(new ObjectInputStream(player2.getInputStream()));
-                    toPlayers.get(1).writeObject(PLAYER2); // send player number
+                    toPlayers.get(1).writeObject(BlackjackConstants.PLAYER2); // send player number
                     toPlayers.get(1).writeObject(numberOfPlayers); // send number of players in the game
 
                     // Start the game session in a new thread

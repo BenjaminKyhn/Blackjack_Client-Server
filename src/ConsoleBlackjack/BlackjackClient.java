@@ -1,3 +1,8 @@
+package ConsoleBlackjack;
+
+import Model.Card;
+import Model.Ranks;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

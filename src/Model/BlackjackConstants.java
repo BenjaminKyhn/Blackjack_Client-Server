@@ -1,3 +1,5 @@
+package Model;
+
 public interface BlackjackConstants {
     public static int PLAYER1 = 1;
     public static int PLAYER2 = 2;
