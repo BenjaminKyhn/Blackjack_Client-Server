@@ -244,7 +244,7 @@ public class BlackjackClientFX extends Application {
     private int calculateHandValue(ArrayList<Card> cards) {
         int value = 0;
 
-        for (int i = 0; i < cards.size(); i++) {
+        for (int i = cards.size() - 1; i >= 0; i--) {
             Card card = cards.get(i);
             value += card.getValue();
         }

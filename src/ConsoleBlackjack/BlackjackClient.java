@@ -236,7 +236,7 @@ public class BlackjackClient {
         }
 
         if (value > 21) {
-            for (int i = 0; i < cards.size(); i++) {
+            for (int i = cards.size() - 1; i >= 0; i--) {
                 Card card = cards.get(i);
                 if (card.getRank() == Ranks.ACE) {
                     card.setValue(1);
