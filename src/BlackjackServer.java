@@ -190,8 +190,7 @@ public class BlackjackServer implements BlackjackConstants {
 
                 System.out.println("Game finished.");
 
-                //TODO: Disallow dealer from drawing anymore cards if both players already bust
-                //TODO: Handle more than one session
+                //TODO: Handle more than one session. Something about moving streams to the session.
 
             } catch (Exception e) {
                 e.printStackTrace();
