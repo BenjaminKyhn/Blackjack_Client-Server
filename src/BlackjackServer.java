@@ -152,6 +152,7 @@ public class BlackjackServer implements BlackjackConstants {
                     Card card = deck.draw();
                     dealerHand.add(card);
                     handValue += card.getValue();
+                    System.out.println(calculateHandValue(dealerHand));
                     for (int i = 0; i < numberOfPlayers; i++) {
                         toPlayers.get(i).writeObject(card);
                     }
@@ -162,10 +163,38 @@ public class BlackjackServer implements BlackjackConstants {
                 //TODO: Disallow dealer from drawing anymore cards if both players already bust
                 //TODO: Fix Ace value
                 //TODO: Handle more than one session
+                //TODO: add clause for when the initial hand is 21 (in client)
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    // Method for determining Ace value and calculating total hand value
+    public int calculateHandValue(ArrayList<Card> cards){
+        int value = 0;
+
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            value += card.getValue();
+        }
+
+        outer: while (true){
+            for (int i = 0; i < cards.size(); i++) {
+                Card card = cards.get(i);
+                if (card.getRank() == Ranks.ACE){
+                    card.setValue(1);
+                    value = 0;
+                    for (int j = 0; j < cards.size(); j++) {
+                        value += cards.get(j).getValue();
+                    }
+                }
+                if (value <= 21)
+                    break outer;
+            }
+        }
+
+        return value;
     }
 }

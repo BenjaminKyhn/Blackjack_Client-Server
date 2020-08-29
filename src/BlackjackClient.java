@@ -90,7 +90,7 @@ public class BlackjackClient {
                     // Take own turn
                     if (playerTurn == player) {
                         hitCount = 0;
-                        if (handValue < 21) {
+                        if (handValue < 21) { // here
                             System.out.println("Your turn. Do you want to HIT or STAND?");
                             String answer = input.nextLine();
                             toServer.writeObject(answer);
@@ -98,7 +98,8 @@ public class BlackjackClient {
                                 if (answer.toLowerCase().equals("hit")) {
                                     hitCount++;
                                     myHand.add((Card) fromServer.readObject());
-                                    handValue += myHand.get(hitCount + 1).getValue();
+                                    handValue = calculateHandValue(myHand);
+//                                    handValue += myHand.get(hitCount + 1).getValue();
                                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                                             myHand.get(hitCount + 1).getSuit() + ".");
                                     if (handValue <= 21) {
@@ -131,7 +132,8 @@ public class BlackjackClient {
                             if (answer.toLowerCase().equals("hit")) {
                                 hitCount++;
                                 otherPlayerHand.add((Card) fromServer.readObject());
-                                otherPlayerHandValue += otherPlayerHand.get(hitCount + 1).getValue();
+                                otherPlayerHandValue = calculateHandValue(otherPlayerHand);
+//                                otherPlayerHandValue += otherPlayerHand.get(hitCount + 1).getValue();
                                 System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                                         otherPlayerHand.get(hitCount + 1).getSuit() + ".");
                                 if (otherPlayerHandValue <= 21) {
@@ -154,13 +156,14 @@ public class BlackjackClient {
                 dealerHandValue += dealerHand.get(1).getValue();
                 System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                         " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
-                        ". The current value os his hand is " + dealerHandValue + ".");
+                        ". The current value of his hand is " + dealerHandValue + ".");
 
                 // Observe moves from the dealer
                 while (dealerHandValue < 17) {
                     Card card = (Card) fromServer.readObject();
                     dealerHand.add(card);
-                    dealerHandValue += card.getValue();
+                    calculateHandValue(dealerHand);
+//                    dealerHandValue += card.getValue();
                     System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                             "of his hand is now " + dealerHandValue + ".");
                     if (dealerHandValue > 21)
@@ -178,5 +181,32 @@ public class BlackjackClient {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    // Method for determining Ace value and calculating total hand value
+    public int calculateHandValue(ArrayList<Card> cards){
+        int value = 0;
+
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            value += card.getValue();
+        }
+
+        outer: while (true){
+            for (int i = 0; i < cards.size(); i++) {
+                Card card = cards.get(i);
+                if (card.getRank() == Ranks.ACE){
+                    card.setValue(1);
+                    value = 0;
+                    for (int j = 0; j < cards.size(); j++) {
+                        value += cards.get(j).getValue();
+                    }
+                }
+                if (value <= 21)
+                    break outer;
+            }
+        }
+
+        return value;
     }
 }
