@@ -19,7 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class BlackjackClientFX extends Application {
     private ObjectInputStream fromServer;
@@ -416,13 +415,24 @@ public class BlackjackClientFX extends Application {
         System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                 " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
                 ". The current value of his hand is " + dealerHandValue + ".");
+        Platform.runLater(() -> {
+            messages.appendText("\n\nThe dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
+                    " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
+                    ". The current value of his hand is " + dealerHandValue + ".");
+        });
     }
 
     private void takeDealerTurn() throws IOException, ClassNotFoundException {
         if (dealerHandValue == 21) {
             System.out.println("The dealer has natural Blackjack!");
+            Platform.runLater(() -> {
+                messages.setText("\n\nThe dealer has natural Blackjack!");
+            });
             if (!lost) {
-                System.out.println("YOU LOSE.");
+                System.out.println("YOU LOSE!");
+                Platform.runLater(() -> {
+                    messages.appendText("\n\nYOU LOSE!");
+                });
                 lost = true;
             }
         }
@@ -434,20 +444,40 @@ public class BlackjackClientFX extends Application {
                 dealerHandValue = calculateHandValue(dealerHand);
                 System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                         "of his hand is now " + dealerHandValue + ".");
-                if (dealerHandValue > 21)
+                Platform.runLater(() -> {
+                    messages.setText("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
+                            "of his hand is now " + dealerHandValue + ".");
+                });
+                if (dealerHandValue > 21){
                     System.out.println("The dealer bust!");
+                    Platform.runLater(() -> {
+                        messages.setText("The dealer bust!");
+                    });
+                }
             }
         }
     }
 
     private void checkForWin() {
         if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
-                || (!lost && dealerHandValue == handValue && dealerHandValue <= 21))
+                || (!lost && dealerHandValue == handValue && dealerHandValue <= 21)){
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
-        else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue))
+            Platform.runLater(() -> {
+                messages.setText("YOU LOSE! THE DEALER WINS!");
+            });
+        }
+        else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue)){
             System.out.println("\nYOU WIN!");
-        else if (lost && otherPlayerLost)
+            Platform.runLater(() -> {
+                messages.setText("YOU WIN!");
+            });
+        }
+        else if (lost && otherPlayerLost) {
             System.out.println("THE DEALER BEAT ALL PLAYERS!");
+            Platform.runLater(() -> {
+                messages.setText("THE DEALER BEAT ALL PLAYERS!");
+            });
+        }
     }
 
     private int calculateHandValue(ArrayList<Card> cards) {
@@ -476,3 +506,5 @@ public class BlackjackClientFX extends Application {
         return value;
     }
 }
+
+// TODO: There was some error when the first player chose to stand immediately (index 3 out of bounds for length 3 from myHand ArrayList when using hitcount to access it line 304)
