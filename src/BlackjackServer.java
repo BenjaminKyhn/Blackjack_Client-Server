@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class BlackjackServer implements BlackjackConstants {
+public class BlackjackServer {
     private ArrayList<ObjectInputStream> fromPlayers = new ArrayList<>();
     private ArrayList<ObjectOutputStream> toPlayers = new ArrayList<>();
     private int numberOfPlayers = 2;
@@ -28,7 +28,7 @@ public class BlackjackServer implements BlackjackConstants {
                     System.out.println("Player one connected.");
                     toPlayers.add(new ObjectOutputStream(player1.getOutputStream()));
                     fromPlayers.add(new ObjectInputStream(player1.getInputStream()));
-                    toPlayers.get(0).writeObject(BlackjackConstants.PLAYER1); // send player number
+                    toPlayers.get(0).writeObject(1); // send player number
                     toPlayers.get(0).writeObject(numberOfPlayers); // send number of players in the game
 
                     // Connect to player 2
@@ -36,7 +36,7 @@ public class BlackjackServer implements BlackjackConstants {
                     System.out.println("Player two connected.");
                     toPlayers.add(new ObjectOutputStream(player2.getOutputStream()));
                     fromPlayers.add(new ObjectInputStream(player2.getInputStream()));
-                    toPlayers.get(1).writeObject(BlackjackConstants.PLAYER2); // send player number
+                    toPlayers.get(1).writeObject(2); // send player number
                     toPlayers.get(1).writeObject(numberOfPlayers); // send number of players in the game
 
                     // Start the game session in a new thread
