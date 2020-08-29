@@ -1,32 +1,28 @@
-package BlackjackFX;
-
 import Model.BlackjackConstants;
 import Model.Card;
 import Model.Deck;
 import Model.Ranks;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class BlackjackServerFX implements BlackjackConstants {
+public class BlackjackServer implements BlackjackConstants {
     private ArrayList<ObjectInputStream> fromPlayers = new ArrayList<>();
     private ArrayList<ObjectOutputStream> toPlayers = new ArrayList<>();
     private int numberOfPlayers = 2;
     private int currentPlayer;
 
     public static void main(String[] args) {
-        new BlackjackServerFX();
+        new BlackjackServer();
     }
 
-    public BlackjackServerFX() {
+    public BlackjackServer() {
         new Thread(() -> {
             try {
-                ServerSocket serverSocket = new ServerSocket(8016);
+                ServerSocket serverSocket = new ServerSocket(8015);
                 System.out.println(new Date() + ": Blackjack server started. Waiting for players to connect...");
 
                 while (true) {

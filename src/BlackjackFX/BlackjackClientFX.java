@@ -20,7 +20,7 @@ public class BlackjackClientFX extends Application {
     private ObjectInputStream fromServer;
     private ObjectOutputStream toServer;
     private String host = "localhost";
-    private int port = 8016;
+    private int port = 8015;
     private int player;
     private int numberOfPlayers;
     private boolean lost = false;
