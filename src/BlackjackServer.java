@@ -119,10 +119,8 @@ public class BlackjackServer implements BlackjackConstants {
         }
 
         // Draw cards for the dealer
-        dealerHand.add(new Card(Ranks.ACE, Suits.HEARTS));
-        dealerHand.add(new Card(Ranks.ACE, Suits.HEARTS));
-//        dealerHand.add(deck.draw());
-//        dealerHand.add(deck.draw());
+        dealerHand.add(deck.draw());
+        dealerHand.add(deck.draw());
 
         // Keep track of hand values
         handValue = calculateHandValue(dealerHand);

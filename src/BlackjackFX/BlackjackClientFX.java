@@ -205,18 +205,24 @@ public class BlackjackClientFX extends Application {
         card2 = new Image("image/card/" + myHand.get(1).getNumber() + ".png");
         card3 = new Image("image/card/" + otherPlayerHand.get(0).getNumber() + ".png");
         card4 = new Image("image/card/" + otherPlayerHand.get(1).getNumber() + ".png");
+        card5 = new Image("image/card/b2fv.png");
+        card6 = new Image("image/card/" + dealerHand.get(0).getNumber() + ".png");
 
         if (player == 1){
             imageView1.setImage(card1);
             imageView2.setImage(card2);
             imageView3.setImage(card3);
             imageView4.setImage(card4);
+            imageView5.setImage(card5);
+            imageView6.setImage(card6);
         }
         else if (player == 2){
             imageView1.setImage(card3);
             imageView2.setImage(card4);
             imageView3.setImage(card1);
             imageView4.setImage(card2);
+            imageView5.setImage(card5);
+            imageView6.setImage(card6);
         }
 
         // Keep track of the players' hand values
