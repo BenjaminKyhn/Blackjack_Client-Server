@@ -208,15 +208,14 @@ public class BlackjackClientFX extends Application {
         card5 = new Image("image/card/b2fv.png");
         card6 = new Image("image/card/" + dealerHand.get(0).getNumber() + ".png");
 
-        if (player == 1){
+        if (player == 1) {
             imageView1.setImage(card1);
             imageView2.setImage(card2);
             imageView3.setImage(card3);
             imageView4.setImage(card4);
             imageView5.setImage(card5);
             imageView6.setImage(card6);
-        }
-        else if (player == 2){
+        } else if (player == 2) {
             imageView1.setImage(card3);
             imageView2.setImage(card4);
             imageView3.setImage(card1);
@@ -258,6 +257,9 @@ public class BlackjackClientFX extends Application {
         hitCount = 0;
         if (handValue < 21) { // here
             System.out.println("Your turn. Do you want to HIT or STAND?");
+            Platform.runLater(() -> {
+                messages.setText("Your turn. Do you want to HIT or STAND?");
+            });
             String answer = input.nextLine();
             toServer.writeObject(answer);
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
@@ -267,26 +269,54 @@ public class BlackjackClientFX extends Application {
                     handValue = calculateHandValue(myHand);
                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                             myHand.get(hitCount + 1).getSuit() + ".");
+                    Platform.runLater(() -> {
+                        messages.setText("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
+                                myHand.get(hitCount + 1).getSuit() + ".");
+                    });
                     if (handValue <= 21) {
                         System.out.println("The value of your hand is " + (handValue) + ".");
                         System.out.println("Do you want to HIT or STAND?");
+                        Platform.runLater(() -> {
+                            messages.appendText("\n\nThe value of your hand is " + (handValue) + "."
+                                    + "\nDo you want to HIT or STAND?");
+                        });
                     } else {
                         System.out.println("You bust! The value of your hand is " + handValue + "!");
+                        Platform.runLater(() -> {
+                            messages.setText("You bust! The value of your hand is " + handValue + "!");
+                        });
                         answer = "bust";
                         lost = true;
                     }
-                } else
+                } else {
                     System.out.println("Please type hit or stand.");
+                    Platform.runLater(() -> {
+                        messages.setText("Please type hit or stand");
+                    });
+                }
                 if (!answer.toLowerCase().equals("bust"))
                     answer = input.nextLine();
                 toServer.writeObject(answer);
             }
-            if (answer.toLowerCase().equals("bust"))
-                System.out.println("YOU LOSE.\n");
-            else
+            if (answer.toLowerCase().equals("bust")) {
+                System.out.println("YOU LOSE!\n");
+                Platform.runLater(() -> {
+                    messages.setText("YOU LOSE!");
+                });
+            } else {
                 System.out.println("You chose to stand.\n");
-        } else
+                Platform.runLater(() -> {
+                    messages.setText("You chose to stand.");
+                });
+            }
+
+        } else {
             System.out.println("You hit natural Blackjack!");
+            Platform.runLater(() -> {
+                messages.setText("You hit natural Blackjack!");
+            });
+        }
+
     }
 
     private void observerOtherPlayer() throws IOException, ClassNotFoundException {
