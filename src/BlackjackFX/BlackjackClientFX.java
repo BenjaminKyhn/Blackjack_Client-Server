@@ -83,6 +83,8 @@ public class BlackjackClientFX extends Application {
         imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
         imageView3.xProperty().bind(imageView4.xProperty().subtract(card3.getWidth() + 25));
         imageView3.yProperty().bind(imageView4.yProperty());
+        player2Name.translateXProperty().bind(imageView4.xProperty().subtract((player2Name.getWidth() / 2) + 12.5));
+        player2Name.translateYProperty().bind(imageView4.yProperty().subtract(50));
 
         // Adjust the position of the dealer's UI elements
         imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract(card5.getWidth() + 12.5));
