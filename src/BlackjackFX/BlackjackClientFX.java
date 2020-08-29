@@ -3,6 +3,7 @@ package BlackjackFX;
 import Model.Card;
 import Model.Ranks;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -63,15 +64,32 @@ public class BlackjackClientFX extends Application {
 
         Scene scene = new Scene(pane, 600, 600);
         stage.setTitle("BlackjackFX");
+        stage.setMinHeight(600);
+        stage.setMinWidth(600);
         stage.setScene(scene);
         stage.show();
 
-
+        imageView1.xProperty().bind(pane.layoutXProperty().add(50));
+        imageView1.yProperty().bind(pane.heightProperty().subtract(card1.getHeight() + 50));
+        imageView2.xProperty().bind(imageView1.xProperty().add(card2.getWidth() + 25));
+        imageView2.yProperty().bind(imageView1.yProperty());
 
         imageView4.xProperty().bind(pane.widthProperty().subtract(card4.getWidth() + 50));
         imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
         imageView3.xProperty().bind(imageView4.xProperty().subtract(card3.getWidth() + 25));
         imageView3.yProperty().bind(imageView4.yProperty());
+
+        imageView5.setX((pane.getWidth() / 2) - card5.getWidth() - 12.5);
+        imageView5.setY(50);
+        imageView6.setX((pane.getWidth() / 2) + 12.5);
+        imageView6.setY(50);
+
+        // Set the position of UI elements to adjust to the screen size
+        ChangeListener<Number> redraw = (observable, oldValue, newValue) -> {
+            imageView5.setX((pane.getWidth() / 2) - card5.getWidth() - 12.5);
+            imageView6.setX((pane.getWidth() / 2) + 12.5);
+        };
+        pane.widthProperty().addListener(redraw);
 
         connectToServer();
     }
