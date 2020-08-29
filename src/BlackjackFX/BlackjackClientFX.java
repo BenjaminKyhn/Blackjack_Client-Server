@@ -4,6 +4,8 @@ import Model.Card;
 import Model.Ranks;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -27,6 +29,10 @@ public class BlackjackClientFX extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Pane pane = new Pane();
+
+        Image image = new Image("image/card/1.png");
+        ImageView imageView = new ImageView(image);
+        pane.getChildren().add(imageView);
 
         Scene scene = new Scene(pane, 320, 320);
         stage.setTitle("BlackjackFX");
