@@ -38,7 +38,7 @@ public class BlackjackClientFX extends Application {
     private int otherPlayerHandValue = 0;
     private int dealerHandValue = 0;
     private int playerTurn;
-    private String answer;
+    private String answer = "";
 
     private MyLabel dealerName;
     private MyLabel player1Name;
@@ -85,7 +85,7 @@ public class BlackjackClientFX extends Application {
         btHit.setVisible(false);
         btStand.setVisible(false);
 
-        btHit.setOnAction(e -> {
+        btHit.setOnMouseClicked(e -> {
             btHit.setVisible(false);
             btStand.setVisible(false);
             answer = "hit";
@@ -96,7 +96,7 @@ public class BlackjackClientFX extends Application {
             }
         });
 
-        btStand.setOnAction(e -> {
+        btStand.setOnMouseClicked(e -> {
             btHit.setVisible(false);
             btStand.setVisible(false);
             answer = "stand";
@@ -277,7 +277,7 @@ public class BlackjackClientFX extends Application {
         });
     }
 
-    private void takeTurn() throws IOException, ClassNotFoundException {
+    private void takeTurn() throws IOException, ClassNotFoundException, InterruptedException {
         Scanner input = new Scanner(System.in);
         hitCount = 0;
         if (handValue < 21) { // here
@@ -289,6 +289,10 @@ public class BlackjackClientFX extends Application {
             // Show buttons to allow answers
             btHit.setVisible(true);
             btStand.setVisible(true);
+
+            // Infinite loop waits for a button click
+            while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("hit")) {
+            }
 
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                 if (answer.toLowerCase().equals("hit")) {
@@ -311,7 +315,7 @@ public class BlackjackClientFX extends Application {
                     } else {
                         System.out.println("You bust! The value of your hand is " + handValue + "!");
                         Platform.runLater(() -> {
-                            messages.setText("You bust! The value of your hand is " + handValue + "!");
+                            messages.appendText("\nYou bust! The value of your hand is " + handValue + "!");
                         });
                         answer = "bust";
                         lost = true;
@@ -322,14 +326,21 @@ public class BlackjackClientFX extends Application {
                         messages.setText("Please type hit or stand");
                     });
                 }
-                if (!answer.toLowerCase().equals("bust"))
-                    answer = input.nextLine();
-                toServer.writeObject(answer);
+                if (!answer.toLowerCase().equals("bust")) {
+                    // Show buttons to allow answers
+                    btHit.setVisible(true);
+                    btStand.setVisible(true);
+
+                    // Infinite loop waits for a button click
+                    while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("hit")) {
+                    }
+                } else
+                    toServer.writeObject(answer);
             }
             if (answer.toLowerCase().equals("bust")) {
                 System.out.println("YOU LOSE!\n");
                 Platform.runLater(() -> {
-                    messages.setText("YOU LOSE!");
+                    messages.appendText("\n\nYOU LOSE!");
                 });
             } else {
                 System.out.println("You chose to stand.\n");
@@ -341,7 +352,7 @@ public class BlackjackClientFX extends Application {
         } else {
             System.out.println("You hit natural Blackjack!");
             Platform.runLater(() -> {
-                messages.setText("You hit natural Blackjack!");
+                messages.appendText("\n\nYou hit natural Blackjack!");
             });
         }
     }
