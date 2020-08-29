@@ -13,6 +13,7 @@ public class BlackjackClient {
     private int player;
     private int numberOfPlayers;
     private boolean lost = false;
+    private boolean otherPlayerLost = false;
 
     public static void main(String[] args) {
         new BlackjackClient();
@@ -143,8 +144,10 @@ public class BlackjackClient {
                                 }
                                 answer = (String) fromServer.readObject();
                             }
-                            if (answer.toLowerCase().equals("bust"))
+                            if (answer.toLowerCase().equals("bust")){
                                 System.out.println("The other player has lost.\n");
+                                otherPlayerLost = true;
+                            }
                             else
                                 System.out.println("The other player chose to stand.\n");
                         } else
@@ -168,22 +171,27 @@ public class BlackjackClient {
                         lost = true;
                     }
                 }
-                while (dealerHandValue < 17) {
-                    Card card = (Card) fromServer.readObject();
-                    dealerHand.add(card);
-                    dealerHandValue = calculateHandValue(dealerHand);
-                    System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
-                            "of his hand is now " + dealerHandValue + ".");
-                    if (dealerHandValue > 21)
-                        System.out.println("The dealer bust!");
+
+                if (!lost || !otherPlayerLost){
+                    while (dealerHandValue < 17) {
+                        Card card = (Card) fromServer.readObject();
+                        dealerHand.add(card);
+                        dealerHandValue = calculateHandValue(dealerHand);
+                        System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
+                                "of his hand is now " + dealerHandValue + ".");
+                        if (dealerHandValue > 21)
+                            System.out.println("The dealer bust!");
+                    }
                 }
 
                 // Check who won
                 if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
                         || (!lost && dealerHandValue == handValue && dealerHandValue <= 21))
-                    System.out.println("\nYOU LOSE! THE DEALER WINS");
+                    System.out.println("\nYOU LOSE! THE DEALER WINS!");
                 else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue))
                     System.out.println("\nYOU WIN!");
+                else if (lost && otherPlayerLost)
+                    System.out.println("THE DEALER BEAT ALL PLAYERS!");
 
             } catch (Exception e) {
                 e.printStackTrace();

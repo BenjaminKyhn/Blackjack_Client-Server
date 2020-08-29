@@ -52,6 +52,7 @@ public class BlackjackServer implements BlackjackConstants {
     class HandleASession implements Runnable {
         private Socket player1;
         private Socket player2;
+        private boolean continueToPlay = true;
 
         public HandleASession(Socket player1, Socket player2) {
             this.player1 = player1;
@@ -171,13 +172,19 @@ public class BlackjackServer implements BlackjackConstants {
                 if (handValue == 21)
                     System.out.println("Dealer has natural Blackjack.");
 
-                // Hit new cards if the handValue is below 17
-                while (handValue < 17) {
-                    Card card = deck.draw();
-                    dealerHand.add(card);
-                    handValue = calculateHandValue(dealerHand);
-                    for (int i = 0; i < numberOfPlayers; i++) {
-                        toPlayers.get(i).writeObject(card);
+                // Hit cards only if some of the players haven't lost
+                for (int i = 0; i < numberOfPlayers; i++) {
+                    if (!playerLost[i]) {
+                        // Hit new cards if the handValue is below 17
+                        while (handValue < 17) {
+                            Card card = deck.draw();
+                            dealerHand.add(card);
+                            handValue = calculateHandValue(dealerHand);
+                            for (int j = 0; j < numberOfPlayers; j++) {
+                                toPlayers.get(j).writeObject(card);
+                            }
+                        }
+                        break;
                     }
                 }
 
