@@ -73,25 +73,25 @@ public class BlackjackClientFX extends Application {
         System.out.println(player1Name.getWidth());
         imageView1.xProperty().bind(pane.layoutXProperty().add(50));
         imageView1.yProperty().bind(pane.heightProperty().subtract(card1.getHeight() + 50));
-        imageView2.xProperty().bind(imageView1.xProperty().add(card2.getWidth() + 25));
+        imageView2.xProperty().bind(imageView1.xProperty().add(15));
         imageView2.yProperty().bind(imageView1.yProperty());
-        player1Name.translateXProperty().bind(imageView2.xProperty().subtract((player1Name.getWidth() / 2) + 12.5));
-        player1Name.translateYProperty().bind(imageView2.yProperty().subtract(50));
+        player1Name.translateXProperty().bind(imageView1.xProperty().add(player1Name.getWidth() / 2));
+        player1Name.translateYProperty().bind(imageView1.yProperty().subtract(50));
 
         // Adjust the position of player 2's UI elements
         imageView4.xProperty().bind(pane.widthProperty().subtract(card4.getWidth() + 50));
         imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
-        imageView3.xProperty().bind(imageView4.xProperty().subtract(card3.getWidth() + 25));
+        imageView3.xProperty().bind(imageView4.xProperty().subtract(15));
         imageView3.yProperty().bind(imageView4.yProperty());
-        player2Name.translateXProperty().bind(imageView4.xProperty().subtract((player2Name.getWidth() / 2) + 12.5));
-        player2Name.translateYProperty().bind(imageView4.yProperty().subtract(50));
+        player2Name.translateXProperty().bind(imageView3.xProperty().add(player2Name.getWidth() / 2));
+        player2Name.translateYProperty().bind(imageView3.yProperty().subtract(50));
 
         // Adjust the position of the dealer's UI elements
-        imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract(card5.getWidth() + 12.5));
+        imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract((card5.getWidth() / 2) + 7.5));
         imageView5.setY(50);
-        imageView6.xProperty().bind(pane.widthProperty().divide(2).add(12.5));
+        imageView6.xProperty().bind(imageView5.xProperty().add(15));
         imageView6.setY(50);
-        dealerName.translateXProperty().bind(imageView6.xProperty().subtract((dealerName.getWidth() / 2) + 12.5));
+        dealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(dealerName.getWidth() / 2));
         dealerName.translateYProperty().bind(imageView6.yProperty().add(card6.getHeight() + (50 - dealerName.getHeight())));
 
         connectToServer();
