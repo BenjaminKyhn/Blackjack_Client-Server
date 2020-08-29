@@ -73,19 +73,7 @@ public class BlackjackServer implements BlackjackConstants {
             try {
                 startGame(playerHands, dealerHand, handValues, handValue, playerLost, deck);
 
-                // Send information about player hands to player 1
-                toPlayers.get(0).writeObject(playerHands.get(0).get(0));
-                toPlayers.get(0).writeObject(playerHands.get(0).get(1));
-                toPlayers.get(0).writeObject(playerHands.get(1).get(0));
-                toPlayers.get(0).writeObject(playerHands.get(1).get(1));
-                toPlayers.get(0).writeObject(dealerHand.get(0));
-
-                // Send information about player hands to player 2
-                toPlayers.get(1).writeObject(playerHands.get(1).get(0));
-                toPlayers.get(1).writeObject(playerHands.get(1).get(1));
-                toPlayers.get(1).writeObject(playerHands.get(0).get(0));
-                toPlayers.get(1).writeObject(playerHands.get(0).get(1));
-                toPlayers.get(1).writeObject(dealerHand.get(0));
+                sendHandsToPlayers(playerHands, dealerHand);
 
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
 
@@ -204,6 +192,22 @@ public class BlackjackServer implements BlackjackConstants {
             handValues[i] += playerHands.get(i).get(0).getValue();
             handValues[i] += playerHands.get(i).get(1).getValue();
         }
+    }
+
+    private void sendHandsToPlayers(ArrayList<ArrayList<Card>> playerHands, ArrayList<Card> dealerHand) throws IOException {
+        // Send information about player hands to player 1
+        toPlayers.get(0).writeObject(playerHands.get(0).get(0));
+        toPlayers.get(0).writeObject(playerHands.get(0).get(1));
+        toPlayers.get(0).writeObject(playerHands.get(1).get(0));
+        toPlayers.get(0).writeObject(playerHands.get(1).get(1));
+        toPlayers.get(0).writeObject(dealerHand.get(0));
+
+        // Send information about player hands to player 2
+        toPlayers.get(1).writeObject(playerHands.get(1).get(0));
+        toPlayers.get(1).writeObject(playerHands.get(1).get(1));
+        toPlayers.get(1).writeObject(playerHands.get(0).get(0));
+        toPlayers.get(1).writeObject(playerHands.get(0).get(1));
+        toPlayers.get(1).writeObject(dealerHand.get(0));
     }
 
     // Method for determining Ace value and calculating total hand value
