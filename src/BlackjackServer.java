@@ -17,34 +17,36 @@ public class BlackjackServer implements BlackjackConstants {
     }
 
     public BlackjackServer() {
-        try {
-            ServerSocket serverSocket = new ServerSocket(8015);
-            System.out.println(new Date() + ": Blackjack server started. Waiting for players to connect...");
+        new Thread(() -> {
+            try {
+                ServerSocket serverSocket = new ServerSocket(8015);
+                System.out.println(new Date() + ": Blackjack server started. Waiting for players to connect...");
 
-            while (true) {
-                // Connect to player 1
-                Socket player1 = serverSocket.accept();
-                System.out.println("Player one connected.");
-                toPlayers.add(new ObjectOutputStream(player1.getOutputStream()));
-                fromPlayers.add(new ObjectInputStream(player1.getInputStream()));
-                toPlayers.get(0).writeObject(PLAYER1); // send player number
-                toPlayers.get(0).writeObject(numberOfPlayers); // send number of players in the game
+                while (true) {
+                    // Connect to player 1
+                    Socket player1 = serverSocket.accept();
+                    System.out.println("Player one connected.");
+                    toPlayers.add(new ObjectOutputStream(player1.getOutputStream()));
+                    fromPlayers.add(new ObjectInputStream(player1.getInputStream()));
+                    toPlayers.get(0).writeObject(PLAYER1); // send player number
+                    toPlayers.get(0).writeObject(numberOfPlayers); // send number of players in the game
 
-                // Connect to player 2
-                Socket player2 = serverSocket.accept();
-                System.out.println("Player two connected.");
-                toPlayers.add(new ObjectOutputStream(player2.getOutputStream()));
-                fromPlayers.add(new ObjectInputStream(player2.getInputStream()));
-                toPlayers.get(1).writeObject(PLAYER2); // send player number
-                toPlayers.get(1).writeObject(numberOfPlayers); // send number of players in the game
+                    // Connect to player 2
+                    Socket player2 = serverSocket.accept();
+                    System.out.println("Player two connected.");
+                    toPlayers.add(new ObjectOutputStream(player2.getOutputStream()));
+                    fromPlayers.add(new ObjectInputStream(player2.getInputStream()));
+                    toPlayers.get(1).writeObject(PLAYER2); // send player number
+                    toPlayers.get(1).writeObject(numberOfPlayers); // send number of players in the game
 
-                // Start the game session in a new thread
-                System.out.println("Game session started for two players");
-                new Thread(new HandleASession(player1, player2)).start();
+                    // Start the game session in a new thread
+                    System.out.println("Game session started for two players");
+                    new Thread(new HandleASession(player1, player2)).start();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        }).start();
     }
 
     class HandleASession implements Runnable {
