@@ -6,6 +6,7 @@ public class Card implements Serializable {
     private Ranks rank;
     private Suits suit;
     private int value;
+    private int number;
 
     public Card(Ranks rank, Suits suit){
         this.rank = rank;
@@ -35,5 +36,13 @@ public class Card implements Serializable {
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

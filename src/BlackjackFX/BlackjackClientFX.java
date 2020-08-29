@@ -147,8 +147,7 @@ public class BlackjackClientFX extends Application {
                 System.out.println("Waiting for more players...");
                 messages.appendText("Waiting for more players...");
                 player1Name.setText("You");
-            }
-            else
+            } else if (player == 2)
                 player2Name.setText("You");
             System.out.println();
         } catch (IOException | ClassNotFoundException ex) {
@@ -198,6 +197,9 @@ public class BlackjackClientFX extends Application {
         otherPlayerHand.add((Card) fromServer.readObject());
         otherPlayerHand.add((Card) fromServer.readObject());
         dealerHand.add((Card) fromServer.readObject());
+
+        // Update cards in the UI
+
 
         // Keep track of the players' hand values
         for (int i = 0; i < 2; i++) {
