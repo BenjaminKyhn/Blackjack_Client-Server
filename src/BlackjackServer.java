@@ -71,37 +71,21 @@ public class BlackjackServer implements BlackjackConstants {
         @Override
         public void run() {
             try {
+                // Initialize deck, player hands and dealers hand
                 startGame(playerHands, dealerHand, handValues, handValue, playerLost, deck);
 
+                // Send cards drawn to the players
                 sendHandsToPlayers(playerHands, dealerHand);
-
                 System.out.println("All cards have been dealt. Waiting for player 1 to make a move...");
 
+                // Ready player moves
                 readPlayerMoves(handValues, deck ,playerHands, playerLost);
 
                 // Send the dealer's other card to the players
-                for (int i = 0; i < numberOfPlayers; i++) {
-                    toPlayers.get(i).writeObject(dealerHand.get(1));
-                }
+                sendDealerCardsToPlayers(dealerHand);
 
-                if (handValue == 21)
-                    System.out.println("Dealer has natural Blackjack.");
-
-                // Hit cards only if some of the players haven't lost
-                for (int i = 0; i < numberOfPlayers; i++) {
-                    if (!playerLost[i]) {
-                        // Hit new cards if the handValue is below 17
-                        while (handValue < 17) {
-                            Card card = deck.draw();
-                            dealerHand.add(card);
-                            handValue = calculateHandValue(dealerHand);
-                            for (int j = 0; j < numberOfPlayers; j++) {
-                                toPlayers.get(j).writeObject(card);
-                            }
-                        }
-                        break;
-                    }
-                }
+                // Take the dealer's turn
+                takeDealerTurn(handValue, playerLost, deck, dealerHand);
 
                 System.out.println("Game finished.");
 
@@ -210,6 +194,33 @@ public class BlackjackServer implements BlackjackConstants {
                     playerLost[i] = true;
                 } else
                     System.out.println("The player stands.");
+            }
+        }
+    }
+
+    private void sendDealerCardsToPlayers(ArrayList<Card> dealerHand) throws IOException {
+        for (int i = 0; i < numberOfPlayers; i++) {
+            toPlayers.get(i).writeObject(dealerHand.get(1));
+        }
+    }
+
+    private void takeDealerTurn(int handValue, boolean[] playerLost, Deck deck, ArrayList<Card> dealerHand) throws IOException {
+        if (handValue == 21)
+            System.out.println("Dealer has natural Blackjack.");
+
+        // Hit cards only if some of the players haven't lost
+        for (int i = 0; i < numberOfPlayers; i++) {
+            if (!playerLost[i]) {
+                // Hit new cards if the handValue is below 17
+                while (handValue < 17) {
+                    Card card = deck.draw();
+                    dealerHand.add(card);
+                    handValue = calculateHandValue(dealerHand);
+                    for (int j = 0; j < numberOfPlayers; j++) {
+                        toPlayers.get(j).writeObject(card);
+                    }
+                }
+                break;
             }
         }
     }
