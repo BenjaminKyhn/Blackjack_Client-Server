@@ -71,7 +71,7 @@ public class BlackjackClientFX extends Application {
 
         // Adjust the position of player 1's UI elements
         System.out.println(player1Name.getWidth());
-        imageView1.xProperty().bind(pane.layoutXProperty().add(50));
+        imageView1.xProperty().bind(pane.layoutXProperty().add(120));
         imageView1.yProperty().bind(pane.heightProperty().subtract(card1.getHeight() + 50));
         imageView2.xProperty().bind(imageView1.xProperty().add(15));
         imageView2.yProperty().bind(imageView1.yProperty());
@@ -79,7 +79,7 @@ public class BlackjackClientFX extends Application {
         player1Name.translateYProperty().bind(imageView1.yProperty().subtract(50));
 
         // Adjust the position of player 2's UI elements
-        imageView4.xProperty().bind(pane.widthProperty().subtract(card4.getWidth() + 50));
+        imageView4.xProperty().bind(pane.widthProperty().subtract(card4.getWidth() + 120));
         imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
         imageView3.xProperty().bind(imageView4.xProperty().subtract(15));
         imageView3.yProperty().bind(imageView4.yProperty());
@@ -93,6 +93,8 @@ public class BlackjackClientFX extends Application {
         imageView6.setY(50);
         dealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(dealerName.getWidth() / 2));
         dealerName.translateYProperty().bind(imageView6.yProperty().add(card6.getHeight() + (50 - dealerName.getHeight())));
+
+        // TODO: In the future change card 1 and card 3's xProperty dynamically when cards are added to the hand
 
         connectToServer();
     }
