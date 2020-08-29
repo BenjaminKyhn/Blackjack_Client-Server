@@ -2,16 +2,15 @@ package BlackjackFX;
 
 import Model.Card;
 import Model.Ranks;
+import UI.MyLabel;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -39,22 +38,30 @@ public class BlackjackClientFX extends Application {
     private int dealerHandValue = 0;
     private int playerTurn;
 
+    private MyLabel dealerName;
+    private MyLabel player1Name;
+    private MyLabel player2Name;
+    private MyLabel messages;
+    private Button btHit;
+    private Button btStand;
+
     @Override
     public void start(Stage stage) throws Exception {
         AnchorPane pane = new AnchorPane();
 
-        Label dealerName = new Label("Dealer");
-        Label player1Name = new Label("Player 1");
-        Label player2Name = new Label("Player 2");
-        Label messages = new Label("Messages will appear here...");
+        dealerName = new MyLabel("Dealer");
+        player1Name = new MyLabel("Player 1");
+        player2Name = new MyLabel("Player 2");
+        messages = new MyLabel("Messages will appear here...");
         dealerName.setFont(new Font("Arial", 24));
         player1Name.setFont(new Font("Arial", 24));
         player2Name.setFont(new Font("Arial", 24));
-        messages.setPrefWidth(150);
+        messages.setPrefWidth(300);
+        messages.setTextAlignment(TextAlignment.CENTER);
         messages.setWrapText(true);
 
-        Button btHit = new Button("HIT");
-        Button btStand = new Button("STAND");
+        btHit = new Button("HIT");
+        btStand = new Button("STAND");
         btHit.setPrefWidth(75);
         btStand.setPrefWidth(75);
 
@@ -109,9 +116,9 @@ public class BlackjackClientFX extends Application {
         // Adjust the position of other UI elements
         messages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(messages.getPrefWidth() / 2));
         messages.translateYProperty().bind(pane.heightProperty().divide(2).subtract(50));
-        btHit.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 50));
+        btHit.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 30));
         btHit.translateYProperty().bind(pane.heightProperty().divide(2).subtract(btHit.getHeight() + 10));
-        btStand.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 50));
+        btStand.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 30));
         btStand.translateYProperty().bind(pane.heightProperty().divide(2).add(10));
 
         // TODO: In the future change card 1 and card 3's xProperty dynamically when cards are added to the hand
@@ -134,9 +141,15 @@ public class BlackjackClientFX extends Application {
             numberOfPlayers = (int) fromServer.readObject();
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
                     "and you are player " + player + ".");
+            messages.setText("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
+                    "and you are player " + player + ".");
             if (player == 1) {
                 System.out.println("Waiting for more players...");
+                messages.appendText("Waiting for more players...");
+                player1Name.setText("You");
             }
+            else
+                player2Name.setText("You");
             System.out.println();
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
