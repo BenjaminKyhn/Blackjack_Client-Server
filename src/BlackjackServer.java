@@ -157,6 +157,9 @@ public class BlackjackServer implements BlackjackConstants {
                     toPlayers.get(i).writeObject(dealerHand.get(1));
                 }
 
+                if (handValue == 21)
+                    System.out.println("Dealer has natural Blackjack.");
+
                 // Hit new cards if the handValue is below 17
                 while (handValue < 17){
                     Card card = deck.draw();
@@ -171,9 +174,7 @@ public class BlackjackServer implements BlackjackConstants {
                 System.out.println("Game finished.");
 
                 //TODO: Disallow dealer from drawing anymore cards if both players already bust
-                //TODO: Fix Ace value
                 //TODO: Handle more than one session
-                //TODO: add clause for when the initial hand is 21 (in client)
 
             } catch (Exception e) {
                 e.printStackTrace();

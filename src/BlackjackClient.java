@@ -161,6 +161,10 @@ public class BlackjackClient {
                         ". The current value of his hand is " + dealerHandValue + ".");
 
                 // Observe moves from the dealer
+                if (dealerHandValue == 21){
+                    System.out.println("The dealer has natural Blackjack!");
+                    lost = true;
+                }
                 while (dealerHandValue < 17) {
                     Card card = (Card) fromServer.readObject();
                     dealerHand.add(card);
