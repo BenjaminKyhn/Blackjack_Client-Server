@@ -61,6 +61,12 @@ public class BlackjackServer implements BlackjackConstants {
         @Override
         public void run() {
             try {
+                // Keep track of player status (if he loses)
+                boolean[] playerLost = new boolean[numberOfPlayers];
+                for (int i = 0; i < numberOfPlayers; i++) {
+                    playerLost[i] = false;
+                }
+
                 // Create a new deck of cards
                 Deck deck = new Deck();
 
@@ -113,15 +119,15 @@ public class BlackjackServer implements BlackjackConstants {
                     }
 
                     // Receive answers only if the player didn't hit 21
-                    if (handValues[i] < 21){
+                    if (handValues[i] < 21) {
                         // Receive an answer from the current player
                         String answer = (String) fromPlayers.get(i).readObject();
 
                         // Send the answer to inactive players
-                        if (currentPlayer == 1){
+                        if (currentPlayer == 1) {
                             toPlayers.get(1).writeObject(answer);
                         }
-                        if (currentPlayer == 2){
+                        if (currentPlayer == 2) {
                             toPlayers.get(0).writeObject(answer);
                         }
 
@@ -135,22 +141,25 @@ public class BlackjackServer implements BlackjackConstants {
                                 for (int j = 0; j < numberOfPlayers; j++) {
                                     toPlayers.get(j).writeObject(card);
                                 }
-                            }
-                            else
+                            } else
                                 System.out.println("Please type hit or stand.");
 
                             // Receive an answer
                             answer = (String) fromPlayers.get(i).readObject();
 
                             // Send the answer to inactive players
-                            if (currentPlayer == 1){
+                            if (currentPlayer == 1) {
                                 toPlayers.get(1).writeObject(answer);
                             }
-                            if (currentPlayer == 2){
+                            if (currentPlayer == 2) {
                                 toPlayers.get(0).writeObject(answer);
                             }
                         }
-                        System.out.println("The player stands.");
+                        if (answer.toLowerCase().equals("bust")) {
+                            System.out.println("The player bust.");
+                            playerLost[i] = true;
+                        } else
+                            System.out.println("The player stands.");
                     }
                 }
 
@@ -163,11 +172,10 @@ public class BlackjackServer implements BlackjackConstants {
                     System.out.println("Dealer has natural Blackjack.");
 
                 // Hit new cards if the handValue is below 17
-                while (handValue < 17){
+                while (handValue < 17) {
                     Card card = deck.draw();
                     dealerHand.add(card);
-                    handValue += card.getValue();
-                    System.out.println(calculateHandValue(dealerHand));
+                    handValue = calculateHandValue(dealerHand);
                     for (int i = 0; i < numberOfPlayers; i++) {
                         toPlayers.get(i).writeObject(card);
                     }
