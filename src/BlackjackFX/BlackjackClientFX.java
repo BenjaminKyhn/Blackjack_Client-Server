@@ -5,11 +5,13 @@ import Model.Ranks;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -44,6 +46,13 @@ public class BlackjackClientFX extends Application {
         Label dealerName = new Label("Dealer");
         Label player1Name = new Label("Player 1");
         Label player2Name = new Label("Player 2");
+        Label messages = new Label("Messages will appear here...");
+        dealerName.setFont(new Font("Arial", 24));
+        player1Name.setFont(new Font("Arial", 24));
+        player2Name.setFont(new Font("Arial", 24));
+
+        Button btHit = new Button("HIT");
+        Button btStand = new Button("STAND");
 
         Image card1 = new Image("image/card/1.png");
         Image card2 = new Image("image/card/2.png");
@@ -75,7 +84,7 @@ public class BlackjackClientFX extends Application {
         imageView1.yProperty().bind(pane.heightProperty().subtract(card1.getHeight() + 50));
         imageView2.xProperty().bind(imageView1.xProperty().add(15));
         imageView2.yProperty().bind(imageView1.yProperty());
-        player1Name.translateXProperty().bind(imageView1.xProperty().add(player1Name.getWidth() / 2));
+        player1Name.translateXProperty().bind(imageView1.xProperty().add(player1Name.getPrefWidth() / 2));
         player1Name.translateYProperty().bind(imageView1.yProperty().subtract(50));
 
         // Adjust the position of player 2's UI elements
@@ -83,7 +92,7 @@ public class BlackjackClientFX extends Application {
         imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
         imageView3.xProperty().bind(imageView4.xProperty().subtract(15));
         imageView3.yProperty().bind(imageView4.yProperty());
-        player2Name.translateXProperty().bind(imageView3.xProperty().add(player2Name.getWidth() / 2));
+        player2Name.translateXProperty().bind(imageView3.xProperty().add(player2Name.getPrefWidth() / 2));
         player2Name.translateYProperty().bind(imageView3.yProperty().subtract(50));
 
         // Adjust the position of the dealer's UI elements
@@ -92,7 +101,7 @@ public class BlackjackClientFX extends Application {
         imageView6.xProperty().bind(imageView5.xProperty().add(15));
         imageView6.setY(50);
         dealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(dealerName.getWidth() / 2));
-        dealerName.translateYProperty().bind(imageView6.yProperty().add(card6.getHeight() + (50 - dealerName.getHeight())));
+        dealerName.translateYProperty().bind(imageView6.yProperty().add(card6.getHeight() + 25));
 
         // TODO: In the future change card 1 and card 3's xProperty dynamically when cards are added to the hand
 
