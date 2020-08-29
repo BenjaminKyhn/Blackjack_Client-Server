@@ -87,7 +87,6 @@ public class BlackjackServer implements BlackjackConstants {
                 System.out.println("Game finished.");
 
                 //TODO: Handle more than one session. Something about moving streams to the session.
-                //TODO: Fix dealer's opening hand value showing 1 if he has an ace
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -222,7 +221,6 @@ public class BlackjackServer implements BlackjackConstants {
         }
     }
 
-    // Method for determining Ace value and calculating total hand value
     private int calculateHandValue(ArrayList<Card> cards) {
         int value = 0;
 
@@ -231,6 +229,7 @@ public class BlackjackServer implements BlackjackConstants {
             value += card.getValue();
         }
 
+        // Determine Ace value
         if (value > 21) {
             for (int i = cards.size() - 1; i >= 0; i--) {
                 Card card = cards.get(i);

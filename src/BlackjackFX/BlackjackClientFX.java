@@ -240,7 +240,6 @@ public class BlackjackClientFX extends Application {
             System.out.println("THE DEALER BEAT ALL PLAYERS!");
     }
 
-    // Method for determining Ace value and calculating total hand value
     private int calculateHandValue(ArrayList<Card> cards) {
         int value = 0;
 
@@ -249,6 +248,7 @@ public class BlackjackClientFX extends Application {
             value += card.getValue();
         }
 
+        // Determine Ace value
         if (value > 21) {
             for (int i = 0; i < cards.size(); i++) {
                 Card card = cards.get(i);
