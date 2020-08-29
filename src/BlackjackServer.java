@@ -1,7 +1,4 @@
-import Model.BlackjackConstants;
-import Model.Card;
-import Model.Deck;
-import Model.Ranks;
+import Model.*;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -90,7 +87,7 @@ public class BlackjackServer implements BlackjackConstants {
                 System.out.println("Game finished.");
 
                 //TODO: Handle more than one session. Something about moving streams to the session.
-                //TODO: Fix dealer's opening hand able to be 22 if he has 2 aces (maybe all players?)
+                //TODO: Fix dealer's opening hand value showing 1 if he has an ace
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -118,11 +115,9 @@ public class BlackjackServer implements BlackjackConstants {
         dealerHand.add(deck.draw());
 
         // Keep track of hand values
-        handValue = dealerHand.get(0).getValue() + dealerHand.get(1).getValue();
+        handValue = calculateHandValue(dealerHand);
         for (int i = 0; i < numberOfPlayers; i++) {
-            handValues[i] = 0;
-            handValues[i] += playerHands.get(i).get(0).getValue();
-            handValues[i] += playerHands.get(i).get(1).getValue();
+            handValues[i] = calculateHandValue(playerHands.get(i));
         }
     }
 

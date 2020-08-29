@@ -21,7 +21,6 @@ public enum Ranks {
         this.value = value;
     }
 
-    // Maybe add a boolean smallAce as a parameter
     public int getValue(){
         return value;
     }
