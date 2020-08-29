@@ -50,9 +50,13 @@ public class BlackjackClientFX extends Application {
         dealerName.setFont(new Font("Arial", 24));
         player1Name.setFont(new Font("Arial", 24));
         player2Name.setFont(new Font("Arial", 24));
+        messages.setPrefWidth(150);
+        messages.setWrapText(true);
 
         Button btHit = new Button("HIT");
         Button btStand = new Button("STAND");
+        btHit.setPrefWidth(75);
+        btStand.setPrefWidth(75);
 
         Image card1 = new Image("image/card/1.png");
         Image card2 = new Image("image/card/2.png");
@@ -69,7 +73,7 @@ public class BlackjackClientFX extends Application {
         ImageView imageView6 = new ImageView(card6);
 
         pane.getChildren().addAll(dealerName, player1Name, player2Name, imageView1, imageView2, imageView3, imageView4,
-                imageView5, imageView6);
+                imageView5, imageView6, messages, btHit, btStand);
 
         Scene scene = new Scene(pane, 600, 600);
         stage.setTitle("BlackjackFX");
@@ -79,7 +83,6 @@ public class BlackjackClientFX extends Application {
         stage.show();
 
         // Adjust the position of player 1's UI elements
-        System.out.println(player1Name.getWidth());
         imageView1.xProperty().bind(pane.layoutXProperty().add(120));
         imageView1.yProperty().bind(pane.heightProperty().subtract(card1.getHeight() + 50));
         imageView2.xProperty().bind(imageView1.xProperty().add(15));
@@ -102,6 +105,14 @@ public class BlackjackClientFX extends Application {
         imageView6.setY(50);
         dealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(dealerName.getWidth() / 2));
         dealerName.translateYProperty().bind(imageView6.yProperty().add(card6.getHeight() + 25));
+
+        // Adjust the position of other UI elements
+        messages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(messages.getPrefWidth() / 2));
+        messages.translateYProperty().bind(pane.heightProperty().divide(2).subtract(50));
+        btHit.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 50));
+        btHit.translateYProperty().bind(pane.heightProperty().divide(2).subtract(btHit.getHeight() + 10));
+        btStand.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 50));
+        btStand.translateYProperty().bind(pane.heightProperty().divide(2).add(10));
 
         // TODO: In the future change card 1 and card 3's xProperty dynamically when cards are added to the hand
 
