@@ -91,6 +91,8 @@ public class BlackjackClientFX extends Application {
         imageView5.setY(50);
         imageView6.xProperty().bind(pane.widthProperty().divide(2).add(12.5));
         imageView6.setY(50);
+        dealerName.translateXProperty().bind(imageView6.xProperty().subtract((dealerName.getWidth() / 2) + 12.5));
+        dealerName.translateYProperty().bind(imageView6.yProperty().add(card6.getHeight() + (50 - dealerName.getHeight())));
 
         connectToServer();
     }
