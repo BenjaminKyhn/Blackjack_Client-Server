@@ -25,6 +25,13 @@ public class BlackjackClientFX extends Application {
     private int numberOfPlayers;
     private boolean lost = false;
     private boolean otherPlayerLost = false;
+    private ArrayList<Card> myHand = new ArrayList<>();
+    private ArrayList<Card> otherPlayerHand = new ArrayList<>();
+    private ArrayList<Card> dealerHand = new ArrayList<>();
+    private int hitCount = 0;
+    private int handValue = 0;
+    private int otherPlayerHandValue = 0;
+    private int dealerHandValue = 0;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -34,7 +41,7 @@ public class BlackjackClientFX extends Application {
         ImageView imageView = new ImageView(image);
         pane.getChildren().add(imageView);
 
-        Scene scene = new Scene(pane, 320, 320);
+        Scene scene = new Scene(pane, 600, 600);
         stage.setTitle("BlackjackFX");
         stage.setScene(scene);
         stage.show();
@@ -65,23 +72,19 @@ public class BlackjackClientFX extends Application {
             ex.printStackTrace();
         }
 
+        startGame();
+    }
+
+    public void startGame(){
         new Thread(() -> {
             try {
                 // Start the game session
                 // Contain all players' cards in their own lists
-                ArrayList<Card> myHand = new ArrayList<>();
-                ArrayList<Card> otherPlayerHand = new ArrayList<>();
-                ArrayList<Card> dealerHand = new ArrayList<>();
                 myHand.add((Card) fromServer.readObject());
                 myHand.add((Card) fromServer.readObject());
                 otherPlayerHand.add((Card) fromServer.readObject());
                 otherPlayerHand.add((Card) fromServer.readObject());
                 dealerHand.add((Card) fromServer.readObject());
-
-                int hitCount = 0;
-                int handValue = 0;
-                int otherPlayerHandValue = 0;
-                int dealerHandValue = 0;
 
                 // Keep track of the players' hand values
                 for (int i = 0; i < 2; i++) {
@@ -182,34 +185,10 @@ public class BlackjackClientFX extends Application {
                         ". The current value of his hand is " + dealerHandValue + ".");
 
                 // Observe moves from the dealer
-                if (dealerHandValue == 21) {
-                    System.out.println("The dealer has natural Blackjack!");
-                    if (!lost) {
-                        System.out.println("YOU LOSE.");
-                        lost = true;
-                    }
-                }
-
-                if (!lost || !otherPlayerLost) {
-                    while (dealerHandValue < 17) {
-                        Card card = (Card) fromServer.readObject();
-                        dealerHand.add(card);
-                        dealerHandValue = calculateHandValue(dealerHand);
-                        System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
-                                "of his hand is now " + dealerHandValue + ".");
-                        if (dealerHandValue > 21)
-                            System.out.println("The dealer bust!");
-                    }
-                }
+                takeDealerTurn();
 
                 // Check who won
-                if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
-                        || (!lost && dealerHandValue == handValue && dealerHandValue <= 21))
-                    System.out.println("\nYOU LOSE! THE DEALER WINS!");
-                else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue))
-                    System.out.println("\nYOU WIN!");
-                else if (lost && otherPlayerLost)
-                    System.out.println("THE DEALER BEAT ALL PLAYERS!");
+                checkForWin();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -217,8 +196,40 @@ public class BlackjackClientFX extends Application {
         }).start();
     }
 
+    private void takeDealerTurn() throws IOException, ClassNotFoundException {
+        if (dealerHandValue == 21) {
+            System.out.println("The dealer has natural Blackjack!");
+            if (!lost) {
+                System.out.println("YOU LOSE.");
+                lost = true;
+            }
+        }
+
+        if (!lost || !otherPlayerLost) {
+            while (dealerHandValue < 17) {
+                Card card = (Card) fromServer.readObject();
+                dealerHand.add(card);
+                dealerHandValue = calculateHandValue(dealerHand);
+                System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
+                        "of his hand is now " + dealerHandValue + ".");
+                if (dealerHandValue > 21)
+                    System.out.println("The dealer bust!");
+            }
+        }
+    }
+
+    private void checkForWin(){
+        if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
+                || (!lost && dealerHandValue == handValue && dealerHandValue <= 21))
+            System.out.println("\nYOU LOSE! THE DEALER WINS!");
+        else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue))
+            System.out.println("\nYOU WIN!");
+        else if (lost && otherPlayerLost)
+            System.out.println("THE DEALER BEAT ALL PLAYERS!");
+    }
+
     // Method for determining Ace value and calculating total hand value
-    public int calculateHandValue(ArrayList<Card> cards) {
+    private int calculateHandValue(ArrayList<Card> cards) {
         int value = 0;
 
         for (int i = 0; i < cards.size(); i++) {

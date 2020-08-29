@@ -204,7 +204,7 @@ public class BlackjackServer implements BlackjackConstants {
     }
 
     // Method for determining Ace value and calculating total hand value
-    public int calculateHandValue(ArrayList<Card> cards) {
+    private int calculateHandValue(ArrayList<Card> cards) {
         int value = 0;
 
         for (int i = 0; i < cards.size(); i++) {
