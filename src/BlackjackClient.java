@@ -90,7 +90,7 @@ public class BlackjackClient {
                     // Take own turn
                     if (playerTurn == player) {
                         hitCount = 0;
-                        if (handValue <= 21) { // here
+                        if (handValue < 21) { // here
                             System.out.println("Your turn. Do you want to HIT or STAND?");
                             String answer = input.nextLine();
                             toServer.writeObject(answer);
@@ -119,32 +119,36 @@ public class BlackjackClient {
                                 System.out.println("YOU LOSE.\n");
                             else
                                 System.out.println("You chose to stand.\n");
-                        }
+                        } else
+                            System.out.println("You hit natural Blackjack!");
                     }
 
                     // Observe the other players' turns
                     else {
                         System.out.println("Other player's turn.");
                         hitCount = 0;
-                        String answer = (String) fromServer.readObject();
-                        while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
-                            if (answer.toLowerCase().equals("hit")) {
-                                hitCount++;
-                                otherPlayerHand.add((Card) fromServer.readObject());
-                                otherPlayerHandValue = calculateHandValue(otherPlayerHand);
-                                System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
-                                        otherPlayerHand.get(hitCount + 1).getSuit() + ".");
-                                if (otherPlayerHandValue <= 21) {
-                                    System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
-                                } else
-                                    System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
+                        if (otherPlayerHandValue < 21) {
+                            String answer = (String) fromServer.readObject();
+                            while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
+                                if (answer.toLowerCase().equals("hit")) {
+                                    hitCount++;
+                                    otherPlayerHand.add((Card) fromServer.readObject());
+                                    otherPlayerHandValue = calculateHandValue(otherPlayerHand);
+                                    System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
+                                            otherPlayerHand.get(hitCount + 1).getSuit() + ".");
+                                    if (otherPlayerHandValue <= 21) {
+                                        System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
+                                    } else
+                                        System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
+                                }
+                                answer = (String) fromServer.readObject();
                             }
-                            answer = (String) fromServer.readObject();
-                        }
-                        if (answer.toLowerCase().equals("bust"))
-                            System.out.println("The other player has lost.\n");
-                        else
-                            System.out.println("The other player chose to stand.\n");
+                            if (answer.toLowerCase().equals("bust"))
+                                System.out.println("The other player has lost.\n");
+                            else
+                                System.out.println("The other player chose to stand.\n");
+                        } else
+                            System.out.println("The other player hit natural Blackjack!");
                     }
                 }
 
