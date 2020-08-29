@@ -172,7 +172,7 @@ public class BlackjackServer implements BlackjackConstants {
     }
 
     // Method for determining Ace value and calculating total hand value
-    public int calculateHandValue(ArrayList<Card> cards){
+    public int calculateHandValue(ArrayList<Card> cards) {
         int value = 0;
 
         for (int i = 0; i < cards.size(); i++) {
@@ -180,10 +180,10 @@ public class BlackjackServer implements BlackjackConstants {
             value += card.getValue();
         }
 
-        outer: while (true){
+        if (value > 21) {
             for (int i = 0; i < cards.size(); i++) {
                 Card card = cards.get(i);
-                if (card.getRank() == Ranks.ACE){
+                if (card.getRank() == Ranks.ACE) {
                     card.setValue(1);
                     value = 0;
                     for (int j = 0; j < cards.size(); j++) {
@@ -191,10 +191,9 @@ public class BlackjackServer implements BlackjackConstants {
                     }
                 }
                 if (value <= 21)
-                    break outer;
+                    break;
             }
         }
-
         return value;
     }
 }

@@ -90,7 +90,7 @@ public class BlackjackClient {
                     // Take own turn
                     if (playerTurn == player) {
                         hitCount = 0;
-                        if (handValue < 21) { // here
+                        if (handValue <= 21) { // here
                             System.out.println("Your turn. Do you want to HIT or STAND?");
                             String answer = input.nextLine();
                             toServer.writeObject(answer);
@@ -99,7 +99,6 @@ public class BlackjackClient {
                                     hitCount++;
                                     myHand.add((Card) fromServer.readObject());
                                     handValue = calculateHandValue(myHand);
-//                                    handValue += myHand.get(hitCount + 1).getValue();
                                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                                             myHand.get(hitCount + 1).getSuit() + ".");
                                     if (handValue <= 21) {
@@ -133,7 +132,6 @@ public class BlackjackClient {
                                 hitCount++;
                                 otherPlayerHand.add((Card) fromServer.readObject());
                                 otherPlayerHandValue = calculateHandValue(otherPlayerHand);
-//                                otherPlayerHandValue += otherPlayerHand.get(hitCount + 1).getValue();
                                 System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                                         otherPlayerHand.get(hitCount + 1).getSuit() + ".");
                                 if (otherPlayerHandValue <= 21) {
@@ -162,8 +160,7 @@ public class BlackjackClient {
                 while (dealerHandValue < 17) {
                     Card card = (Card) fromServer.readObject();
                     dealerHand.add(card);
-                    calculateHandValue(dealerHand);
-//                    dealerHandValue += card.getValue();
+                    dealerHandValue = calculateHandValue(dealerHand);
                     System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                             "of his hand is now " + dealerHandValue + ".");
                     if (dealerHandValue > 21)
@@ -184,7 +181,7 @@ public class BlackjackClient {
     }
 
     // Method for determining Ace value and calculating total hand value
-    public int calculateHandValue(ArrayList<Card> cards){
+    public int calculateHandValue(ArrayList<Card> cards) {
         int value = 0;
 
         for (int i = 0; i < cards.size(); i++) {
@@ -192,10 +189,10 @@ public class BlackjackClient {
             value += card.getValue();
         }
 
-        outer: while (true){
+        if (value > 21) {
             for (int i = 0; i < cards.size(); i++) {
                 Card card = cards.get(i);
-                if (card.getRank() == Ranks.ACE){
+                if (card.getRank() == Ranks.ACE) {
                     card.setValue(1);
                     value = 0;
                     for (int j = 0; j < cards.size(); j++) {
@@ -203,10 +200,9 @@ public class BlackjackClient {
                     }
                 }
                 if (value <= 21)
-                    break outer;
+                    break;
             }
         }
-
         return value;
     }
 }
