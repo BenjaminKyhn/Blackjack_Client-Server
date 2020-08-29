@@ -370,8 +370,9 @@ public class BlackjackClientFX extends Application {
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                 if (answer.toLowerCase().equals("hit")) {
                     hitCount++;
-                    otherPlayerHand.add((Card) fromServer.readObject());
-                    addCardToGUI(otherPlayerHand.get(otherPlayerHand.size() - 1), otherPlayerHand.size(), false, false);
+                    Card card = (Card) fromServer.readObject();
+                    otherPlayerHand.add(card);
+                    addCardToGUI(card, otherPlayerHand.size(), false, false);
                     otherPlayerHandValue = calculateHandValue(otherPlayerHand);
                     System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                             otherPlayerHand.get(hitCount + 1).getSuit() + ".");
@@ -453,6 +454,7 @@ public class BlackjackClientFX extends Application {
             while (dealerHandValue < 17) {
                 Card card = (Card) fromServer.readObject();
                 dealerHand.add(card);
+                addCardToGUI(card, dealerHand.size(), false, true);
                 dealerHandValue = calculateHandValue(dealerHand);
                 System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                         "of his hand is now " + dealerHandValue + ".");
