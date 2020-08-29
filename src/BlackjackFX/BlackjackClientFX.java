@@ -4,6 +4,7 @@ import Model.Card;
 import Model.Ranks;
 import UI.MyLabel;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -143,11 +144,10 @@ public class BlackjackClientFX extends Application {
             numberOfPlayers = (int) fromServer.readObject();
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
                     "and you are player " + player + ".");
-            messages.setText("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
-                    "and you are player " + player + ".");
+            messages.setText("Welcome to Blackjack!");
             if (player == 1) {
                 System.out.println("Waiting for more players...");
-                messages.appendText("Waiting for more players...");
+                messages.appendText("\nWaiting for more players...");
                 player1Name.setText("You");
             } else if (player == 2)
                 player2Name.setText("You");
@@ -241,6 +241,16 @@ public class BlackjackClientFX extends Application {
                 otherPlayerHand.get(1).getValue()) + ".");
         System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                 " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
+
+        Platform.runLater(() -> {
+            messages.setText("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
+                    " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
+                    (handValue) + ".\n\n The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +
+                    otherPlayerHand.get(0).getSuit() + " and " + otherPlayerHand.get(1).getRank() + " of " +
+                    otherPlayerHand.get(1).getSuit() + ". Value of his hand is " + (otherPlayerHand.get(0).getValue() +
+                    otherPlayerHand.get(1).getValue()) + ".\n\n The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
+                    " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".");
+        });
     }
 
     private void takeTurn() throws IOException, ClassNotFoundException {
