@@ -45,6 +45,22 @@ public class BlackjackClientFX extends Application {
     private Button btHit;
     private Button btStand;
 
+    private Image genericCard = new Image("image/card/1.png");
+
+    private Image card1;
+    private Image card2;
+    private Image card3;
+    private Image card4;
+    private Image card5;
+    private Image card6;
+
+    private ImageView imageView1 = new ImageView();
+    private ImageView imageView2 = new ImageView();
+    private ImageView imageView3 = new ImageView();
+    private ImageView imageView4 = new ImageView();
+    private ImageView imageView5 = new ImageView();
+    private ImageView imageView6 = new ImageView();
+
     @Override
     public void start(Stage stage) throws Exception {
         AnchorPane pane = new AnchorPane();
@@ -65,20 +81,6 @@ public class BlackjackClientFX extends Application {
         btHit.setPrefWidth(75);
         btStand.setPrefWidth(75);
 
-        Image card1 = new Image("image/card/1.png");
-        Image card2 = new Image("image/card/2.png");
-        Image card3 = new Image("image/card/3.png");
-        Image card4 = new Image("image/card/4.png");
-        Image card5 = new Image("image/card/5.png");
-        Image card6 = new Image("image/card/6.png");
-
-        ImageView imageView1 = new ImageView(card1);
-        ImageView imageView2 = new ImageView(card2);
-        ImageView imageView3 = new ImageView(card3);
-        ImageView imageView4 = new ImageView(card4);
-        ImageView imageView5 = new ImageView(card5);
-        ImageView imageView6 = new ImageView(card6);
-
         pane.getChildren().addAll(dealerName, player1Name, player2Name, imageView1, imageView2, imageView3, imageView4,
                 imageView5, imageView6, messages, btHit, btStand);
 
@@ -91,27 +93,27 @@ public class BlackjackClientFX extends Application {
 
         // Adjust the position of player 1's UI elements
         imageView1.xProperty().bind(pane.layoutXProperty().add(120));
-        imageView1.yProperty().bind(pane.heightProperty().subtract(card1.getHeight() + 50));
+        imageView1.yProperty().bind(pane.heightProperty().subtract(genericCard.getHeight() + 50));
         imageView2.xProperty().bind(imageView1.xProperty().add(15));
         imageView2.yProperty().bind(imageView1.yProperty());
         player1Name.translateXProperty().bind(imageView1.xProperty().add(player1Name.getPrefWidth() / 2));
         player1Name.translateYProperty().bind(imageView1.yProperty().subtract(50));
 
         // Adjust the position of player 2's UI elements
-        imageView4.xProperty().bind(pane.widthProperty().subtract(card4.getWidth() + 120));
-        imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
+        imageView4.xProperty().bind(pane.widthProperty().subtract(genericCard.getWidth() + 120));
+        imageView4.yProperty().bind(pane.heightProperty().subtract(genericCard.getHeight() + 50));
         imageView3.xProperty().bind(imageView4.xProperty().subtract(15));
         imageView3.yProperty().bind(imageView4.yProperty());
         player2Name.translateXProperty().bind(imageView3.xProperty().add(player2Name.getPrefWidth() / 2));
         player2Name.translateYProperty().bind(imageView3.yProperty().subtract(50));
 
         // Adjust the position of the dealer's UI elements
-        imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract((card5.getWidth() / 2) + 7.5));
+        imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract((genericCard.getWidth() / 2) + 7.5));
         imageView5.setY(50);
         imageView6.xProperty().bind(imageView5.xProperty().add(15));
         imageView6.setY(50);
         dealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(dealerName.getWidth() / 2));
-        dealerName.translateYProperty().bind(imageView6.yProperty().add(card6.getHeight() + 25));
+        dealerName.translateYProperty().bind(imageView6.yProperty().add(genericCard.getHeight() + 25));
 
         // Adjust the position of other UI elements
         messages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(messages.getPrefWidth() / 2));
@@ -199,7 +201,23 @@ public class BlackjackClientFX extends Application {
         dealerHand.add((Card) fromServer.readObject());
 
         // Update cards in the UI
+        card1 = new Image("image/card/" + myHand.get(0).getNumber() + ".png");
+        card2 = new Image("image/card/" + myHand.get(1).getNumber() + ".png");
+        card3 = new Image("image/card/" + otherPlayerHand.get(0).getNumber() + ".png");
+        card4 = new Image("image/card/" + otherPlayerHand.get(1).getNumber() + ".png");
 
+        if (player == 1){
+            imageView1.setImage(card1);
+            imageView2.setImage(card2);
+            imageView3.setImage(card3);
+            imageView4.setImage(card4);
+        }
+        else if (player == 2){
+            imageView1.setImage(card3);
+            imageView2.setImage(card4);
+            imageView3.setImage(card1);
+            imageView4.setImage(card2);
+        }
 
         // Keep track of the players' hand values
         for (int i = 0; i < 2; i++) {
