@@ -96,6 +96,15 @@ public class BlackjackServer implements BlackjackConstants {
 
     private void startGame(ArrayList<ArrayList<Card>> playerHands, ArrayList<Card> dealerHand, int[] handValues,
                            int handValue, boolean[] playerLost, Deck deck){
+        // Give each card a number
+        for (int i = 0; i < deck.getCards().size(); i++) {
+            Card card = deck.getCards().get(i);
+            card.setNumber(i + 1);
+        }
+
+        // Shuffle all the cards
+        deck.shuffle();
+
         // Keep track of player status (if he loses)
         for (int i = 0; i < numberOfPlayers; i++) {
             playerLost[i] = false;

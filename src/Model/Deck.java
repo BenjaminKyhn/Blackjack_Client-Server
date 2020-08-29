@@ -13,10 +13,9 @@ public class Deck {
                 cards.add(new Card(rank, suit));
             }
         }
-        shuffle(cards);
     }
 
-    public synchronized void shuffle(ArrayList<Card> cards){
+    public synchronized void shuffle(){
         Collections.shuffle(cards);
     }
 
