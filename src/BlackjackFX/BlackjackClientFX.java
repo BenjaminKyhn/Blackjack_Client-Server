@@ -38,6 +38,7 @@ public class BlackjackClientFX extends Application {
     private int otherPlayerHandValue = 0;
     private int dealerHandValue = 0;
     private int playerTurn;
+    private String answer;
 
     private MyLabel dealerName;
     private MyLabel player1Name;
@@ -81,6 +82,30 @@ public class BlackjackClientFX extends Application {
         btStand = new Button("STAND");
         btHit.setPrefWidth(75);
         btStand.setPrefWidth(75);
+        btHit.setVisible(false);
+        btStand.setVisible(false);
+
+        btHit.setOnAction(e -> {
+            btHit.setVisible(false);
+            btStand.setVisible(false);
+            answer = "hit";
+            try {
+                toServer.writeObject(answer);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        btStand.setOnAction(e -> {
+            btHit.setVisible(false);
+            btStand.setVisible(false);
+            answer = "stand";
+            try {
+                toServer.writeObject(answer);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        });
 
         pane.getChildren().addAll(dealerName, player1Name, player2Name, imageView1, imageView2, imageView3, imageView4,
                 imageView5, imageView6, messages, btHit, btStand);
@@ -260,8 +285,11 @@ public class BlackjackClientFX extends Application {
             Platform.runLater(() -> {
                 messages.setText("Your turn. Do you want to HIT or STAND?");
             });
-            String answer = input.nextLine();
-            toServer.writeObject(answer);
+
+            // Show buttons to allow answers
+            btHit.setVisible(true);
+            btStand.setVisible(true);
+
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                 if (answer.toLowerCase().equals("hit")) {
                     hitCount++;
@@ -316,7 +344,6 @@ public class BlackjackClientFX extends Application {
                 messages.setText("You hit natural Blackjack!");
             });
         }
-
     }
 
     private void observerOtherPlayer() throws IOException, ClassNotFoundException {
