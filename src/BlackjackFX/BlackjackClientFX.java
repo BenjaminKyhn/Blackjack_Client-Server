@@ -4,8 +4,10 @@ import Model.Card;
 import Model.Ranks;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -36,16 +38,40 @@ public class BlackjackClientFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Pane pane = new Pane();
+        AnchorPane pane = new AnchorPane();
 
-        Image image = new Image("image/card/1.png");
-        ImageView imageView = new ImageView(image);
-        pane.getChildren().add(imageView);
+        Label dealerName = new Label("Dealer");
+        Label player1Name = new Label("Player 1");
+        Label player2Name = new Label("Player 2");
+
+        Image card1 = new Image("image/card/1.png");
+        Image card2 = new Image("image/card/2.png");
+        Image card3 = new Image("image/card/3.png");
+        Image card4 = new Image("image/card/4.png");
+        Image card5 = new Image("image/card/5.png");
+        Image card6 = new Image("image/card/6.png");
+
+        ImageView imageView1 = new ImageView(card1);
+        ImageView imageView2 = new ImageView(card2);
+        ImageView imageView3 = new ImageView(card3);
+        ImageView imageView4 = new ImageView(card4);
+        ImageView imageView5 = new ImageView(card5);
+        ImageView imageView6 = new ImageView(card6);
+
+        pane.getChildren().addAll(dealerName, player1Name, player2Name, imageView1, imageView2, imageView3, imageView4,
+                imageView5, imageView6);
 
         Scene scene = new Scene(pane, 600, 600);
         stage.setTitle("BlackjackFX");
         stage.setScene(scene);
         stage.show();
+
+
+
+        imageView4.xProperty().bind(pane.widthProperty().subtract(card4.getWidth() + 50));
+        imageView4.yProperty().bind(pane.heightProperty().subtract(card4.getHeight() + 50));
+        imageView3.xProperty().bind(imageView4.xProperty().subtract(card3.getWidth() + 25));
+        imageView3.yProperty().bind(imageView4.yProperty());
 
         connectToServer();
     }
