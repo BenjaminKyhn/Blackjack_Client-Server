@@ -21,6 +21,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 //TODO: lblMessages adjusts position whenever the text inside changes
+//TODO: Fix the visual bug that happened when I had 5 cards in hand (last card FOUR of SPADES):
+// The fith card did not show up in the GUI, but the sixth and seventh did.
+// Also FOUR of SPADES showed up the other client.
 
 public class BlackjackClientFX extends Application {
     private ObjectInputStream fromServer;
