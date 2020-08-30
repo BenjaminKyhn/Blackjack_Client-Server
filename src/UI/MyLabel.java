@@ -8,6 +8,10 @@ public class MyLabel extends Label {
         setText(text);
     }
 
+    public MyLabel(int number){
+        setText(String.valueOf(0));
+    }
+
     public void appendText(String newText) {
         setText(getText() + newText);
     }

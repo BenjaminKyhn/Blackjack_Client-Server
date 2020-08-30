@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -40,10 +41,13 @@ public class BlackjackClientFX extends Application {
     private String answer = "";
 
     private AnchorPane pane;
-    private MyLabel dealerName;
-    private MyLabel player1Name;
-    private MyLabel player2Name;
-    private MyLabel messages;
+    private MyLabel lblDealerName;
+    private MyLabel lblPlayer1Name;
+    private MyLabel lblPlayer2Name;
+    private MyLabel lblDealerValue;
+    private MyLabel lblPlayer1Value;
+    private MyLabel lblPlayer2Value;
+    private MyLabel lblMessages;
     private Button btHit;
     private Button btStand;
 
@@ -67,16 +71,23 @@ public class BlackjackClientFX extends Application {
     public void start(Stage stage) throws Exception {
         pane = new AnchorPane();
 
-        dealerName = new MyLabel("Dealer");
-        player1Name = new MyLabel("Player 1");
-        player2Name = new MyLabel("Player 2");
-        messages = new MyLabel("Messages will appear here...");
-        dealerName.setFont(new Font("Arial", 24));
-        player1Name.setFont(new Font("Arial", 24));
-        player2Name.setFont(new Font("Arial", 24));
-        messages.setPrefWidth(300);
-        messages.setTextAlignment(TextAlignment.CENTER);
-        messages.setWrapText(true);
+        lblDealerName = new MyLabel("Dealer");
+        lblPlayer1Name = new MyLabel("Player 1");
+        lblPlayer2Name = new MyLabel("Player 2");
+        lblMessages = new MyLabel("Messages will appear here...");
+        lblDealerName.setFont(new Font("Arial", 24));
+        lblPlayer1Name.setFont(new Font("Arial", 24));
+        lblPlayer2Name.setFont(new Font("Arial", 24));
+        lblDealerValue = new MyLabel(0);
+        lblPlayer1Value = new MyLabel(0);
+        lblPlayer2Value = new MyLabel(0);
+        lblDealerValue.setFont(new Font("Arial", 24));
+        lblPlayer1Value.setFont(new Font("Arial", 24));
+        lblPlayer2Value.setFont(new Font("Arial", 24));
+
+        lblMessages.setPrefWidth(300);
+        lblMessages.setTextAlignment(TextAlignment.CENTER);
+        lblMessages.setWrapText(true);
 
         btHit = new Button("HIT");
         btStand = new Button("STAND");
@@ -107,8 +118,8 @@ public class BlackjackClientFX extends Application {
             }
         });
 
-        pane.getChildren().addAll(dealerName, player1Name, player2Name, imageView1, imageView2, imageView3, imageView4,
-                imageView5, imageView6, messages, btHit, btStand);
+        pane.getChildren().addAll(lblDealerName, lblPlayer1Name, lblPlayer2Name, imageView1, imageView2, imageView3, imageView4,
+                imageView5, imageView6, lblMessages, btHit, btStand, lblDealerValue, lblPlayer1Value, lblPlayer2Value);
 
         Scene scene = new Scene(pane, 600, 600);
         stage.setTitle("BlackjackFX");
@@ -122,31 +133,37 @@ public class BlackjackClientFX extends Application {
         imageView1.yProperty().bind(pane.heightProperty().subtract(genericCard.getHeight() + 50));
         imageView2.xProperty().bind(imageView1.xProperty().add(15));
         imageView2.yProperty().bind(imageView1.yProperty());
-        player1Name.translateXProperty().bind(imageView1.xProperty().add(player1Name.getPrefWidth() / 2));
-        player1Name.translateYProperty().bind(imageView1.yProperty().subtract(50));
+        lblPlayer1Name.translateXProperty().bind(imageView1.xProperty().add(lblPlayer1Name.getPrefWidth() / 2));
+        lblPlayer1Name.translateYProperty().bind(imageView1.yProperty().subtract(50));
+        lblPlayer1Value.translateXProperty().bind(imageView1.xProperty().subtract(lblPlayer1Value.getWidth() + 50));
+        lblPlayer1Value.translateYProperty().bind(imageView1.yProperty().add((genericCard.getHeight() / 2) - (lblPlayer1Value.getHeight() / 2)));
 
         // Adjust the position of player 2's UI elements
         imageView4.xProperty().bind(pane.widthProperty().subtract(genericCard.getWidth() + 120));
         imageView4.yProperty().bind(pane.heightProperty().subtract(genericCard.getHeight() + 50));
         imageView3.xProperty().bind(imageView4.xProperty().subtract(15));
         imageView3.yProperty().bind(imageView4.yProperty());
-        player2Name.translateXProperty().bind(imageView3.xProperty().add(player2Name.getPrefWidth() / 2));
-        player2Name.translateYProperty().bind(imageView3.yProperty().subtract(50));
+        lblPlayer2Name.translateXProperty().bind(imageView3.xProperty().add(lblPlayer2Name.getPrefWidth() / 2));
+        lblPlayer2Name.translateYProperty().bind(imageView3.yProperty().subtract(50));
+        lblPlayer2Value.translateXProperty().bind(imageView3.xProperty().subtract(lblPlayer2Value.getWidth() + 50));
+        lblPlayer2Value.translateYProperty().bind(imageView3.yProperty().add((genericCard.getHeight() / 2) - (lblPlayer2Value.getHeight() / 2)));
 
         // Adjust the position of the dealer's UI elements
         imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract((genericCard.getWidth() / 2) + 7.5));
         imageView5.setY(50);
         imageView6.xProperty().bind(imageView5.xProperty().add(15));
         imageView6.setY(50);
-        dealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(dealerName.getWidth() / 2));
-        dealerName.translateYProperty().bind(imageView6.yProperty().add(genericCard.getHeight() + 25));
+        lblDealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(lblDealerName.getWidth() / 2));
+        lblDealerName.translateYProperty().bind(imageView6.yProperty().add(genericCard.getHeight() + 25));
+        lblDealerValue.translateXProperty().bind(imageView5.xProperty().subtract(lblDealerValue.getWidth() + 50));
+        lblDealerValue.translateYProperty().bind(imageView5.yProperty().add((genericCard.getHeight() / 2) - (lblDealerValue.getHeight() / 2)));
 
         // Adjust the position of other UI elements
-        messages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(messages.getPrefWidth() / 2));
-        messages.translateYProperty().bind(pane.heightProperty().divide(2).subtract(50));
-        btHit.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 30));
+        lblMessages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(lblMessages.getPrefWidth() / 2));
+        lblMessages.translateYProperty().bind(pane.heightProperty().divide(2).subtract(50));
+        btHit.translateXProperty().bind(lblMessages.translateXProperty().add(lblMessages.getPrefWidth() + 30));
         btHit.translateYProperty().bind(pane.heightProperty().divide(2).subtract(btHit.getHeight() + 10));
-        btStand.translateXProperty().bind(messages.translateXProperty().add(messages.getPrefWidth() + 30));
+        btStand.translateXProperty().bind(lblMessages.translateXProperty().add(lblMessages.getPrefWidth() + 30));
         btStand.translateYProperty().bind(pane.heightProperty().divide(2).add(10));
 
         // TODO: In the future change card 1 and card 3's xProperty dynamically when cards are added to the hand
@@ -169,13 +186,13 @@ public class BlackjackClientFX extends Application {
             numberOfPlayers = (int) fromServer.readObject();
             System.out.println("Connected to Blackjack server. This session is for " + numberOfPlayers + " players " +
                     "and you are player " + player + ".");
-            messages.setText("Welcome to Blackjack!");
+            lblMessages.setText("Welcome to Blackjack!");
             if (player == 1) {
                 System.out.println("Waiting for more players...");
-                messages.appendText("\nWaiting for more players...");
-                player1Name.setText("You");
+                lblMessages.appendText("\nWaiting for more players...");
+                lblPlayer1Name.setText("You");
             } else if (player == 2)
-                player2Name.setText("You");
+                lblPlayer2Name.setText("You");
             System.out.println();
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
@@ -267,7 +284,7 @@ public class BlackjackClientFX extends Application {
                 " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
 
         Platform.runLater(() -> {
-            messages.setText("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
+            lblMessages.setText("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
                     " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
                     (handValue) + ".\n\n The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +
                     otherPlayerHand.get(0).getSuit() + " and " + otherPlayerHand.get(1).getRank() + " of " +
@@ -283,7 +300,7 @@ public class BlackjackClientFX extends Application {
         if (handValue < 21) { // here
             System.out.println("Your turn. Do you want to HIT or STAND?");
             Platform.runLater(() -> {
-                messages.setText("Your turn. Do you want to HIT or STAND?");
+                lblMessages.setText("Your turn. Do you want to HIT or STAND?");
             });
 
             // Show buttons to allow answers
@@ -304,20 +321,20 @@ public class BlackjackClientFX extends Application {
                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                             myHand.get(hitCount + 1).getSuit() + ".");
                     Platform.runLater(() -> {
-                        messages.setText("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
+                        lblMessages.setText("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                                 myHand.get(hitCount + 1).getSuit() + ".");
                     });
                     if (handValue <= 21) {
                         System.out.println("The value of your hand is " + (handValue) + ".");
                         System.out.println("Do you want to HIT or STAND?");
                         Platform.runLater(() -> {
-                            messages.appendText("\n\nThe value of your hand is " + (handValue) + "."
+                            lblMessages.appendText("\n\nThe value of your hand is " + (handValue) + "."
                                     + "\nDo you want to HIT or STAND?");
                         });
                     } else {
                         System.out.println("You bust! The value of your hand is " + handValue + "!");
                         Platform.runLater(() -> {
-                            messages.appendText("\nYou bust! The value of your hand is " + handValue + "!");
+                            lblMessages.appendText("\nYou bust! The value of your hand is " + handValue + "!");
                         });
                         answer = "bust";
                         lost = true;
@@ -325,7 +342,7 @@ public class BlackjackClientFX extends Application {
                 } else {
                     System.out.println("Please type hit or stand.");
                     Platform.runLater(() -> {
-                        messages.setText("Please type hit or stand");
+                        lblMessages.setText("Please type hit or stand");
                     });
                 }
                 if (!answer.toLowerCase().equals("bust")) {
@@ -345,19 +362,19 @@ public class BlackjackClientFX extends Application {
             if (answer.toLowerCase().equals("bust")) {
                 System.out.println("YOU LOSE!\n");
                 Platform.runLater(() -> {
-                    messages.appendText("\n\nYOU LOSE!");
+                    lblMessages.appendText("\n\nYOU LOSE!");
                 });
             } else {
                 System.out.println("You chose to stand.\n");
                 Platform.runLater(() -> {
-                    messages.setText("You chose to stand.");
+                    lblMessages.setText("You chose to stand.");
                 });
             }
 
         } else {
             System.out.println("You hit natural Blackjack!");
             Platform.runLater(() -> {
-                messages.appendText("\n\nYou hit natural Blackjack!");
+                lblMessages.appendText("\n\nYou hit natural Blackjack!");
             });
         }
     }
@@ -365,7 +382,7 @@ public class BlackjackClientFX extends Application {
     private void observerOtherPlayer() throws IOException, ClassNotFoundException {
         System.out.println("Other player's turn.");
         Platform.runLater(() -> {
-            messages.setText("Other player's turn.");
+            lblMessages.setText("Other player's turn.");
         });
         hitCount = 0;
         if (otherPlayerHandValue < 21) {
@@ -380,18 +397,18 @@ public class BlackjackClientFX extends Application {
                     System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                             otherPlayerHand.get(hitCount + 1).getSuit() + ".");
                     Platform.runLater(() -> {
-                        messages.setText("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
+                        lblMessages.setText("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                                 otherPlayerHand.get(hitCount + 1).getSuit() + ".");
                     });
                     if (otherPlayerHandValue <= 21) {
                         System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
                         Platform.runLater(() -> {
-                            messages.appendText("\nThe value of his hand is " + otherPlayerHandValue + ".");
+                            lblMessages.appendText("\nThe value of his hand is " + otherPlayerHandValue + ".");
                         });
                     } else {
                         System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
                         Platform.runLater(() -> {
-                            messages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandValue + "!");
+                            lblMessages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandValue + "!");
                         });
                     }
                 }
@@ -400,19 +417,19 @@ public class BlackjackClientFX extends Application {
             if (answer.toLowerCase().equals("bust")) {
                 System.out.println("The other player has lost.\n");
                 Platform.runLater(() -> {
-                    messages.setText("\nThe other player has lost.");
+                    lblMessages.setText("\nThe other player has lost.");
                 });
                 otherPlayerLost = true;
             } else {
                 System.out.println("The other player chose to stand.\n");
                 Platform.runLater(() -> {
-                    messages.setText("\nThe other player chose to stand.");
+                    lblMessages.setText("\nThe other player chose to stand.");
                 });
             }
         } else {
             System.out.println("The other player hit natural Blackjack!");
             Platform.runLater(() -> {
-                messages.setText("\n\nThe other player hit a natural Blackjack!");
+                lblMessages.setText("\n\nThe other player hit a natural Blackjack!");
             });
         }
     }
@@ -432,7 +449,7 @@ public class BlackjackClientFX extends Application {
                 " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
                 ". The current value of his hand is " + dealerHandValue + ".");
         Platform.runLater(() -> {
-            messages.appendText("\n\nThe dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
+            lblMessages.appendText("\n\nThe dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                     " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
                     ". The current value of his hand is " + dealerHandValue + ".");
         });
@@ -442,12 +459,12 @@ public class BlackjackClientFX extends Application {
         if (dealerHandValue == 21) {
             System.out.println("The dealer has natural Blackjack!");
             Platform.runLater(() -> {
-                messages.setText("\n\nThe dealer has natural Blackjack!");
+                lblMessages.setText("\n\nThe dealer has natural Blackjack!");
             });
             if (!lost) {
                 System.out.println("YOU LOSE!");
                 Platform.runLater(() -> {
-                    messages.appendText("\n\nYOU LOSE!");
+                    lblMessages.appendText("\n\nYOU LOSE!");
                 });
                 lost = true;
             }
@@ -462,13 +479,13 @@ public class BlackjackClientFX extends Application {
                 System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                         "of his hand is now " + dealerHandValue + ".");
                 Platform.runLater(() -> {
-                    messages.setText("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
+                    lblMessages.setText("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                             "of his hand is now " + dealerHandValue + ".");
                 });
                 if (dealerHandValue > 21) {
                     System.out.println("The dealer bust!");
                     Platform.runLater(() -> {
-                        messages.setText("The dealer bust!");
+                        lblMessages.setText("The dealer bust!");
                     });
                 }
             }
@@ -480,17 +497,17 @@ public class BlackjackClientFX extends Application {
                 || (!lost && dealerHandValue == handValue && dealerHandValue <= 21)) {
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
             Platform.runLater(() -> {
-                messages.setText("YOU LOSE! THE DEALER WINS!");
+                lblMessages.setText("YOU LOSE! THE DEALER WINS!");
             });
         } else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue)) {
             System.out.println("\nYOU WIN!");
             Platform.runLater(() -> {
-                messages.setText("YOU WIN!");
+                lblMessages.setText("YOU WIN!");
             });
         } else if (lost && otherPlayerLost) {
             System.out.println("THE DEALER BEAT ALL PLAYERS!");
             Platform.runLater(() -> {
-                messages.setText("THE DEALER BEAT ALL PLAYERS!");
+                lblMessages.setText("THE DEALER BEAT ALL PLAYERS!");
             });
         }
     }
