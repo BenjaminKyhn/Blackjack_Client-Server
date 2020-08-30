@@ -25,6 +25,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+//TODO: In the future change card 1 and card 3's xProperty dynamically when cards are added to the hand
 //TODO: lblMessages adjusts position whenever the text inside changes
 //TODO: Fix the visual bug that happened when I had 5 cards in hand (last card FOUR of SPADES):
 // The fith card did not show up in the GUI, but the sixth and seventh did.
@@ -77,13 +78,12 @@ public class BlackjackClientFX extends Application {
     private ImageView imageView6 = new ImageView();
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         pane = new AnchorPane();
 
         lblDealerName = new MyLabel("Dealer");
         lblPlayer1Name = new MyLabel("Player 1");
         lblPlayer2Name = new MyLabel("Player 2");
-        lblMessages = new MyLabel("Messages will appear here...");
         lblDealerName.setFont(new Font("Arial", 24));
         lblPlayer1Name.setFont(new Font("Arial", 24));
         lblPlayer2Name.setFont(new Font("Arial", 24));
@@ -94,19 +94,9 @@ public class BlackjackClientFX extends Application {
         lblPlayer1Score.setFont(new Font("Arial", 24));
         lblPlayer2Score.setFont(new Font("Arial", 24));
 
-        lblMessages.setWrapText(true);
-        Border border = new Border(new BorderStroke(Color.BLACK,
-                Color.BLACK,
-                Color.BLACK,
-                Color.BLACK,
-                BorderStrokeStyle.SOLID,
-                BorderStrokeStyle.SOLID,
-                BorderStrokeStyle.SOLID,
-                BorderStrokeStyle.SOLID,
-                new CornerRadii(10), BorderWidths.DEFAULT,
-                new Insets(1)));
-        lblMessages.setBorder(border);
+        lblMessages = new MyLabel("Messages will appear here...");
         lblMessages.setTextAlignment(TextAlignment.CENTER);
+        lblMessages.setWrapText(true);
 
         btHit = new Button("HIT");
         btStand = new Button("STAND");
@@ -180,12 +170,10 @@ public class BlackjackClientFX extends Application {
         // Adjust the position of other UI elements
         lblMessages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(lblMessages.widthProperty().divide(2)));
         lblMessages.translateYProperty().bind(pane.heightProperty().divide(2).subtract(lblMessages.heightProperty().divide(2)));
-        btHit.translateXProperty().bind(lblMessages.translateXProperty().add(lblMessages.getPrefWidth() + 30));
+        btHit.translateXProperty().bind(pane.widthProperty().divide(2).add(180));
         btHit.translateYProperty().bind(pane.heightProperty().divide(2).subtract(btHit.getHeight() + 10));
-        btStand.translateXProperty().bind(lblMessages.translateXProperty().add(lblMessages.getPrefWidth() + 30));
+        btStand.translateXProperty().bind(pane.widthProperty().divide(2).add(180));
         btStand.translateYProperty().bind(pane.heightProperty().divide(2).add(10));
-
-        // TODO: In the future change card 1 and card 3's xProperty dynamically when cards are added to the hand
 
         connectToServer();
     }
@@ -500,9 +488,9 @@ public class BlackjackClientFX extends Application {
                 Platform.runLater(() -> {
                     lblMessages.appendText("\n\nYOU LOSE!");
                     if (player == 1) {
-                        lblPlayer2Name.appendText(" (LOSE)");
-                    } else if (player == 2) {
                         lblPlayer1Name.appendText(" (LOSE)");
+                    } else if (player == 2) {
+                        lblPlayer2Name.appendText(" (LOSE)");
                     }
                 });
                 lost = true;
