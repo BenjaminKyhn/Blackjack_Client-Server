@@ -20,6 +20,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+//TODO: lblMessages adjusts position whenever the text inside changes
+
 public class BlackjackClientFX extends Application {
     private ObjectInputStream fromServer;
     private ObjectOutputStream toServer;
@@ -363,6 +365,12 @@ public class BlackjackClientFX extends Application {
                 System.out.println("YOU LOSE!\n");
                 Platform.runLater(() -> {
                     lblMessages.appendText("\n\nYOU LOSE!");
+                    lblDealerScore.appendText("\n(WIN)");
+                    if (player == 1) {
+                        lblPlayer1Score.appendText("\n(LOSE)");
+                    } else if (player == 2) {
+                        lblPlayer2Score.appendText("\n(LOSE)");
+                    }
                 });
             } else {
                 System.out.println("You chose to stand.\n");
@@ -414,6 +422,11 @@ public class BlackjackClientFX extends Application {
                         System.out.println("He bust! The value of his hand is " + otherPlayerHandScore + "!");
                         Platform.runLater(() -> {
                             lblMessages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandScore + "!");
+                            if (player == 1) {
+                                lblPlayer2Score.appendText("\n(LOSE)");
+                            } else if (player == 2) {
+                                lblPlayer1Score.appendText("\n(LOSE)");
+                            }
                         });
                     }
                 }
@@ -471,6 +484,11 @@ public class BlackjackClientFX extends Application {
                 System.out.println("YOU LOSE!");
                 Platform.runLater(() -> {
                     lblMessages.appendText("\n\nYOU LOSE!");
+                    if (player == 1) {
+                        lblPlayer2Score.appendText("\n(LOSE)");
+                    } else if (player == 2) {
+                        lblPlayer1Score.appendText("\n(LOSE)");
+                    }
                 });
                 lost = true;
             }
@@ -496,6 +514,9 @@ public class BlackjackClientFX extends Application {
                     System.out.println("The dealer bust!");
                     Platform.runLater(() -> {
                         lblMessages.setText("The dealer bust!");
+                        if (!lost) {
+                            lblDealerScore.appendText("\n(LOSE)");
+                        }
                     });
                 }
             }
@@ -508,16 +529,28 @@ public class BlackjackClientFX extends Application {
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
             Platform.runLater(() -> {
                 lblMessages.setText("YOU LOSE! THE DEALER WINS!");
+                lblDealerScore.appendText("\n(WIN)");
+                if (player == 1){
+                    lblPlayer1Score.appendText("\n(LOSE)");
+                } else if (player == 2){
+                    lblPlayer2Score.appendText("\n(LOSE)");
+                }
             });
         } else if ((!lost && dealerHandScore > 21) || (!lost && handScore > dealerHandScore)) {
             System.out.println("\nYOU WIN!");
             Platform.runLater(() -> {
                 lblMessages.setText("YOU WIN!");
+                if (player == 1){
+                    lblPlayer1Score.appendText("\n(WIN)");
+                } else if (player == 2){
+                    lblPlayer2Score.appendText("\n(WIN)");
+                }
             });
         } else if (lost && otherPlayerLost) {
             System.out.println("THE DEALER BEAT ALL PLAYERS!");
             Platform.runLater(() -> {
                 lblMessages.setText("THE DEALER BEAT ALL PLAYERS!");
+                lblDealerScore.appendText("\n(WIN)");
             });
         }
     }
