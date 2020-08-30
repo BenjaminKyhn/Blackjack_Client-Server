@@ -514,9 +514,6 @@ public class BlackjackClientFX extends Application {
                     System.out.println("The dealer bust!");
                     Platform.runLater(() -> {
                         lblMessages.setText("The dealer bust!");
-                        if (!lost) {
-                            lblDealerName.appendText(" (LOSE)");
-                        }
                     });
                 }
             }
@@ -524,15 +521,16 @@ public class BlackjackClientFX extends Application {
     }
 
     private void checkForWin() {
+        // Compare own score with dealer's score
         if ((!lost && dealerHandScore == 21) || (!lost && dealerHandScore > handScore && dealerHandScore <= 21)
                 || (!lost && dealerHandScore == handScore && dealerHandScore <= 21)) {
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
             Platform.runLater(() -> {
                 lblMessages.setText("YOU LOSE! THE DEALER WINS!");
                 lblDealerName.appendText(" (WIN)");
-                if (player == 1){
+                if (player == 1) {
                     lblPlayer1Name.appendText(" (LOSE)");
-                } else if (player == 2){
+                } else if (player == 2) {
                     lblPlayer2Name.appendText(" (LOSE)");
                 }
             });
@@ -540,17 +538,37 @@ public class BlackjackClientFX extends Application {
             System.out.println("\nYOU WIN!");
             Platform.runLater(() -> {
                 lblMessages.setText("YOU WIN!");
-                if (player == 1){
+                lblDealerName.appendText(" (LOSE)");
+                if (player == 1) {
                     lblPlayer1Name.appendText(" (WIN)");
-                } else if (player == 2){
+                } else if (player == 2) {
                     lblPlayer2Name.appendText(" (WIN)");
+                }
+            });
+        }
+
+        // Compare the other player's score with the dealer's score
+        if ((!otherPlayerLost && dealerHandScore == 21) || (!otherPlayerLost && dealerHandScore > otherPlayerHandScore && dealerHandScore <= 21)
+                || (!otherPlayerLost && dealerHandScore == otherPlayerHandScore && dealerHandScore <= 21)) {
+            Platform.runLater(() -> {
+                if (player == 1) {
+                    lblPlayer2Name.appendText(" (LOSE)");
+                } else if (player == 2) {
+                    lblPlayer1Name.appendText(" (LOSE)");
+                }
+            });
+        } else if ((!otherPlayerLost && dealerHandScore > 21) || (!otherPlayerLost && otherPlayerHandScore > dealerHandScore)) {
+            Platform.runLater(() -> {
+                if (player == 1) {
+                    lblPlayer2Name.appendText(" (WIN)");
+                } else if (player == 2) {
+                    lblPlayer1Name.appendText(" (WIN)");
                 }
             });
         } else if (lost && otherPlayerLost) {
             System.out.println("THE DEALER BEAT ALL PLAYERS!");
             Platform.runLater(() -> {
                 lblMessages.setText("THE DEALER BEAT ALL PLAYERS!");
-                lblDealerName.appendText(" (WIN)");
             });
         }
     }
