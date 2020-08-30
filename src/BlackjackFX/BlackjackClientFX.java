@@ -33,9 +33,9 @@ public class BlackjackClientFX extends Application {
     private ArrayList<Card> otherPlayerHand = new ArrayList<>();
     private ArrayList<Card> dealerHand = new ArrayList<>();
     private int hitCount = 0;
-    private int handValue = 0;
-    private int otherPlayerHandValue = 0;
-    private int dealerHandValue = 0;
+    private int handScore = 0;
+    private int otherPlayerHandScore = 0;
+    private int dealerHandScore = 0;
     private int playerTurn;
     private String answer = "";
 
@@ -43,9 +43,9 @@ public class BlackjackClientFX extends Application {
     private MyLabel lblDealerName;
     private MyLabel lblPlayer1Name;
     private MyLabel lblPlayer2Name;
-    private MyLabel lblDealerValue;
-    private MyLabel lblPlayer1Value;
-    private MyLabel lblPlayer2Value;
+    private MyLabel lblDealerScore;
+    private MyLabel lblPlayer1Score;
+    private MyLabel lblPlayer2Score;
     private MyLabel lblMessages;
     private Button btHit;
     private Button btStand;
@@ -77,12 +77,12 @@ public class BlackjackClientFX extends Application {
         lblDealerName.setFont(new Font("Arial", 24));
         lblPlayer1Name.setFont(new Font("Arial", 24));
         lblPlayer2Name.setFont(new Font("Arial", 24));
-        lblDealerValue = new MyLabel(0);
-        lblPlayer1Value = new MyLabel(0);
-        lblPlayer2Value = new MyLabel(0);
-        lblDealerValue.setFont(new Font("Arial", 24));
-        lblPlayer1Value.setFont(new Font("Arial", 24));
-        lblPlayer2Value.setFont(new Font("Arial", 24));
+        lblDealerScore = new MyLabel(0);
+        lblPlayer1Score = new MyLabel(0);
+        lblPlayer2Score = new MyLabel(0);
+        lblDealerScore.setFont(new Font("Arial", 24));
+        lblPlayer1Score.setFont(new Font("Arial", 24));
+        lblPlayer2Score.setFont(new Font("Arial", 24));
 
         lblMessages.setPrefWidth(300);
         lblMessages.setTextAlignment(TextAlignment.CENTER);
@@ -118,7 +118,7 @@ public class BlackjackClientFX extends Application {
         });
 
         pane.getChildren().addAll(lblDealerName, lblPlayer1Name, lblPlayer2Name, imageView1, imageView2, imageView3, imageView4,
-                imageView5, imageView6, lblMessages, btHit, btStand, lblDealerValue, lblPlayer1Value, lblPlayer2Value);
+                imageView5, imageView6, lblMessages, btHit, btStand, lblDealerScore, lblPlayer1Score, lblPlayer2Score);
 
         Scene scene = new Scene(pane, 600, 600);
         stage.setTitle("BlackjackFX");
@@ -134,8 +134,8 @@ public class BlackjackClientFX extends Application {
         imageView2.yProperty().bind(imageView1.yProperty());
         lblPlayer1Name.translateXProperty().bind(imageView1.xProperty().add(lblPlayer1Name.getPrefWidth() / 2));
         lblPlayer1Name.translateYProperty().bind(imageView1.yProperty().subtract(50));
-        lblPlayer1Value.translateXProperty().bind(imageView1.xProperty().subtract(lblPlayer1Value.getWidth() + 50));
-        lblPlayer1Value.translateYProperty().bind(imageView1.yProperty().add((genericCard.getHeight() / 2) - (lblPlayer1Value.getHeight() / 2)));
+        lblPlayer1Score.translateXProperty().bind(imageView1.xProperty().subtract(lblPlayer1Score.getWidth() + 50));
+        lblPlayer1Score.translateYProperty().bind(imageView1.yProperty().add((genericCard.getHeight() / 2) - (lblPlayer1Score.getHeight() / 2)));
 
         // Adjust the position of player 2's UI elements
         imageView4.xProperty().bind(pane.widthProperty().subtract(genericCard.getWidth() + 120));
@@ -144,8 +144,8 @@ public class BlackjackClientFX extends Application {
         imageView3.yProperty().bind(imageView4.yProperty());
         lblPlayer2Name.translateXProperty().bind(imageView3.xProperty().add(lblPlayer2Name.getPrefWidth() / 2));
         lblPlayer2Name.translateYProperty().bind(imageView3.yProperty().subtract(50));
-        lblPlayer2Value.translateXProperty().bind(imageView3.xProperty().subtract(lblPlayer2Value.getWidth() + 50));
-        lblPlayer2Value.translateYProperty().bind(imageView3.yProperty().add((genericCard.getHeight() / 2) - (lblPlayer2Value.getHeight() / 2)));
+        lblPlayer2Score.translateXProperty().bind(imageView3.xProperty().subtract(lblPlayer2Score.getWidth() + 50));
+        lblPlayer2Score.translateYProperty().bind(imageView3.yProperty().add((genericCard.getHeight() / 2) - (lblPlayer2Score.getHeight() / 2)));
 
         // Adjust the position of the dealer's UI elements
         imageView5.xProperty().bind(pane.widthProperty().divide(2).subtract((genericCard.getWidth() / 2) + 7.5));
@@ -154,8 +154,8 @@ public class BlackjackClientFX extends Application {
         imageView6.setY(50);
         lblDealerName.translateXProperty().bind(pane.widthProperty().divide(2).subtract(lblDealerName.getWidth() / 2));
         lblDealerName.translateYProperty().bind(imageView6.yProperty().add(genericCard.getHeight() + 25));
-        lblDealerValue.translateXProperty().bind(imageView5.xProperty().subtract(lblDealerValue.getWidth() + 50));
-        lblDealerValue.translateYProperty().bind(imageView5.yProperty().add((genericCard.getHeight() / 2) - (lblDealerValue.getHeight() / 2)));
+        lblDealerScore.translateXProperty().bind(imageView5.xProperty().subtract(lblDealerScore.getWidth() + 50));
+        lblDealerScore.translateYProperty().bind(imageView5.yProperty().add((genericCard.getHeight() / 2) - (lblDealerScore.getHeight() / 2)));
 
         // Adjust the position of other UI elements
         lblMessages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(lblMessages.getPrefWidth() / 2));
@@ -267,53 +267,42 @@ public class BlackjackClientFX extends Application {
 
         // Keep track of the players' hand values
         for (int i = 0; i < 2; i++) {
-            handValue += myHand.get(i).getValue();
-            otherPlayerHandValue += otherPlayerHand.get(i).getValue();
+            handScore += myHand.get(i).getValue();
+            otherPlayerHandScore += otherPlayerHand.get(i).getValue();
         }
-        dealerHandValue += dealerHand.get(0).getValue();
+        dealerHandScore += dealerHand.get(0).getValue();
 
         // Update the UI with hand values
-        if (player == 1){
+        if (player == 1) {
             Platform.runLater(() -> {
-                lblPlayer1Value.setText(handValue);
-                lblPlayer2Value.setText(otherPlayerHandValue);
-                lblDealerValue.setText(dealerHandValue);
+                lblPlayer1Score.setText(handScore);
+                lblPlayer2Score.setText(otherPlayerHandScore);
+                lblDealerScore.setText(dealerHandScore);
             });
-        }
-        else if (player == 2){
+        } else if (player == 2) {
             Platform.runLater(() -> {
-                lblPlayer1Value.setText(otherPlayerHandValue);
-                lblPlayer2Value.setText(handValue);
-                lblDealerValue.setText(dealerHandValue);
+                lblPlayer1Score.setText(otherPlayerHandScore);
+                lblPlayer2Score.setText(handScore);
+                lblDealerScore.setText(dealerHandScore);
             });
         }
 
         // Print out the current hand status of all players
         System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
                 " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
-                (handValue) + ".");
+                (handScore) + ".");
         System.out.println("The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +
                 otherPlayerHand.get(0).getSuit() + " and " + otherPlayerHand.get(1).getRank() + " of " +
                 otherPlayerHand.get(1).getSuit() + ". Value of his hand is " + (otherPlayerHand.get(0).getValue() +
                 otherPlayerHand.get(1).getValue()) + ".");
         System.out.println("The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                 " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
-
-        Platform.runLater(() -> {
-            lblMessages.setText("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
-                    " and " + myHand.get(1).getRank() + " of " + myHand.get(1).getSuit() + ". Value of your hand is " +
-                    (handValue) + ".\n\n The other player was dealth " + otherPlayerHand.get(0).getRank() + " of " +
-                    otherPlayerHand.get(0).getSuit() + " and " + otherPlayerHand.get(1).getRank() + " of " +
-                    otherPlayerHand.get(1).getSuit() + ". Value of his hand is " + (otherPlayerHand.get(0).getValue() +
-                    otherPlayerHand.get(1).getValue()) + ".\n\n The dealer drew " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
-                    " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".");
-        });
     }
 
     private void takeTurn() throws IOException, ClassNotFoundException, InterruptedException {
         hitCount = 0;
         answer = "";
-        if (handValue < 21) { // here
+        if (handScore < 21) { // here
             System.out.println("Your turn. Do you want to HIT or STAND?");
             Platform.runLater(() -> {
                 lblMessages.setText("Your turn. Do you want to HIT or STAND?");
@@ -332,25 +321,30 @@ public class BlackjackClientFX extends Application {
                     hitCount++;
                     Card card = (Card) fromServer.readObject();
                     myHand.add(card);
+                    handScore = calculateHandScore(myHand);
+                    System.out.println(handScore);
+
+                    // Update GUI
                     addCardToGUI(card, myHand.size(), true, false);
-                    handValue = calculateHandValue(myHand);
+                    updateScore(handScore, true);
+
                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                             myHand.get(hitCount + 1).getSuit() + ".");
                     Platform.runLater(() -> {
                         lblMessages.setText("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                                 myHand.get(hitCount + 1).getSuit() + ".");
                     });
-                    if (handValue <= 21) {
-                        System.out.println("The value of your hand is " + (handValue) + ".");
+                    if (handScore <= 21) {
+                        System.out.println("The value of your hand is " + (handScore) + ".");
                         System.out.println("Do you want to HIT or STAND?");
                         Platform.runLater(() -> {
-                            lblMessages.appendText("\n\nThe value of your hand is " + (handValue) + "."
+                            lblMessages.appendText("\n\nThe value of your hand is " + (handScore) + "."
                                     + "\nDo you want to HIT or STAND?");
                         });
                     } else {
-                        System.out.println("You bust! The value of your hand is " + handValue + "!");
+                        System.out.println("You bust! The value of your hand is " + handScore + "!");
                         Platform.runLater(() -> {
-                            lblMessages.appendText("\nYou bust! The value of your hand is " + handValue + "!");
+                            lblMessages.appendText("\nYou bust! The value of your hand is " + handScore + "!");
                         });
                         answer = "bust";
                         lost = true;
@@ -401,7 +395,7 @@ public class BlackjackClientFX extends Application {
             lblMessages.setText("Other player's turn.");
         });
         hitCount = 0;
-        if (otherPlayerHandValue < 21) {
+        if (otherPlayerHandScore < 21) {
             String answer = (String) fromServer.readObject();
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                 if (answer.toLowerCase().equals("hit")) {
@@ -409,22 +403,22 @@ public class BlackjackClientFX extends Application {
                     Card card = (Card) fromServer.readObject();
                     otherPlayerHand.add(card);
                     addCardToGUI(card, otherPlayerHand.size(), false, false);
-                    otherPlayerHandValue = calculateHandValue(otherPlayerHand);
+                    otherPlayerHandScore = calculateHandScore(otherPlayerHand);
                     System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                             otherPlayerHand.get(hitCount + 1).getSuit() + ".");
                     Platform.runLater(() -> {
                         lblMessages.setText("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                                 otherPlayerHand.get(hitCount + 1).getSuit() + ".");
                     });
-                    if (otherPlayerHandValue <= 21) {
-                        System.out.println("The value of his hand is " + otherPlayerHandValue + ".");
+                    if (otherPlayerHandScore <= 21) {
+                        System.out.println("The value of his hand is " + otherPlayerHandScore + ".");
                         Platform.runLater(() -> {
-                            lblMessages.appendText("\nThe value of his hand is " + otherPlayerHandValue + ".");
+                            lblMessages.appendText("\nThe value of his hand is " + otherPlayerHandScore + ".");
                         });
                     } else {
-                        System.out.println("He bust! The value of his hand is " + otherPlayerHandValue + "!");
+                        System.out.println("He bust! The value of his hand is " + otherPlayerHandScore + "!");
                         Platform.runLater(() -> {
-                            lblMessages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandValue + "!");
+                            lblMessages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandScore + "!");
                         });
                     }
                 }
@@ -453,7 +447,7 @@ public class BlackjackClientFX extends Application {
     private void receiveDealersHand() throws IOException, ClassNotFoundException {
         Card card = (Card) fromServer.readObject();
         dealerHand.add(card);
-        dealerHandValue += dealerHand.get(1).getValue();
+        dealerHandScore += dealerHand.get(1).getValue();
 
         Image cardImage = new Image("image/card/" + card.getNumber() + ".png");
         Platform.runLater(() -> {
@@ -462,16 +456,16 @@ public class BlackjackClientFX extends Application {
 
         System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                 " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
-                ". The current value of his hand is " + dealerHandValue + ".");
+                ". The current value of his hand is " + dealerHandScore + ".");
         Platform.runLater(() -> {
             lblMessages.appendText("\n\nThe dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                     " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
-                    ". The current value of his hand is " + dealerHandValue + ".");
+                    ". The current value of his hand is " + dealerHandScore + ".");
         });
     }
 
     private void takeDealerTurn() throws IOException, ClassNotFoundException {
-        if (dealerHandValue == 21) {
+        if (dealerHandScore == 21) {
             System.out.println("The dealer has natural Blackjack!");
             Platform.runLater(() -> {
                 lblMessages.setText("\n\nThe dealer has natural Blackjack!");
@@ -486,18 +480,18 @@ public class BlackjackClientFX extends Application {
         }
 
         if (!lost || !otherPlayerLost) {
-            while (dealerHandValue < 17) {
+            while (dealerHandScore < 17) {
                 Card card = (Card) fromServer.readObject();
                 dealerHand.add(card);
                 addCardToGUI(card, dealerHand.size(), false, true);
-                dealerHandValue = calculateHandValue(dealerHand);
+                dealerHandScore = calculateHandScore(dealerHand);
                 System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
-                        "of his hand is now " + dealerHandValue + ".");
+                        "of his hand is now " + dealerHandScore + ".");
                 Platform.runLater(() -> {
                     lblMessages.setText("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
-                            "of his hand is now " + dealerHandValue + ".");
+                            "of his hand is now " + dealerHandScore + ".");
                 });
-                if (dealerHandValue > 21) {
+                if (dealerHandScore > 21) {
                     System.out.println("The dealer bust!");
                     Platform.runLater(() -> {
                         lblMessages.setText("The dealer bust!");
@@ -508,13 +502,13 @@ public class BlackjackClientFX extends Application {
     }
 
     private void checkForWin() {
-        if ((!lost && dealerHandValue == 21) || (!lost && dealerHandValue > handValue && dealerHandValue <= 21)
-                || (!lost && dealerHandValue == handValue && dealerHandValue <= 21)) {
+        if ((!lost && dealerHandScore == 21) || (!lost && dealerHandScore > handScore && dealerHandScore <= 21)
+                || (!lost && dealerHandScore == handScore && dealerHandScore <= 21)) {
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
             Platform.runLater(() -> {
                 lblMessages.setText("YOU LOSE! THE DEALER WINS!");
             });
-        } else if ((!lost && dealerHandValue > 21) || (!lost && handValue > dealerHandValue)) {
+        } else if ((!lost && dealerHandScore > 21) || (!lost && handScore > dealerHandScore)) {
             System.out.println("\nYOU WIN!");
             Platform.runLater(() -> {
                 lblMessages.setText("YOU WIN!");
@@ -527,7 +521,7 @@ public class BlackjackClientFX extends Application {
         }
     }
 
-    private int calculateHandValue(ArrayList<Card> cards) {
+    private int calculateHandScore(ArrayList<Card> cards) {
         int value = 0;
 
         for (int i = cards.size() - 1; i >= 0; i--) {
@@ -559,11 +553,10 @@ public class BlackjackClientFX extends Application {
         Platform.runLater(() -> {
             pane.getChildren().add(cardImageView);
         });
-        if (dealerCard){
+        if (dealerCard) {
             cardImageView.xProperty().bind(imageView5.xProperty().add(15 * (handSize - 1)));
             cardImageView.yProperty().bind(imageView5.yProperty());
-        }
-        else if (player == 1) {
+        } else if (player == 1) {
             if (myCard) {
                 cardImageView.xProperty().bind(imageView1.xProperty().add(15 * (handSize - 1)));
                 cardImageView.yProperty().bind(imageView1.yProperty());
@@ -581,5 +574,17 @@ public class BlackjackClientFX extends Application {
                 cardImageView.yProperty().bind(imageView1.yProperty());
             }
         }
+    }
+
+    private void updateScore(int handScore, boolean myCard) {
+        Platform.runLater(() ->{
+            if ((player == 1 && myCard) || (player == 2 && !myCard)) {
+                lblPlayer1Score.setText(handScore);
+            } else if ((player == 2 && myCard) || (player == 1 && !myCard)) {
+                lblPlayer2Score.setText(handScore);
+            } else {
+                lblDealerScore.setText(handScore);
+            }
+        });
     }
 }
