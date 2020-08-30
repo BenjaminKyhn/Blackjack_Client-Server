@@ -265,27 +265,17 @@ public class BlackjackClientFX extends Application {
             imageView6.setImage(card6);
         }
 
-        // Keep track of the players' hand values
+        // Keep track of the players' hand scores
         for (int i = 0; i < 2; i++) {
             handScore += myHand.get(i).getValue();
             otherPlayerHandScore += otherPlayerHand.get(i).getValue();
         }
         dealerHandScore += dealerHand.get(0).getValue();
 
-        // Update the UI with hand values
-        if (player == 1) {
-            Platform.runLater(() -> {
-                lblPlayer1Score.setText(handScore);
-                lblPlayer2Score.setText(otherPlayerHandScore);
-                lblDealerScore.setText(dealerHandScore);
-            });
-        } else if (player == 2) {
-            Platform.runLater(() -> {
-                lblPlayer1Score.setText(otherPlayerHandScore);
-                lblPlayer2Score.setText(handScore);
-                lblDealerScore.setText(dealerHandScore);
-            });
-        }
+        // Update the UI with hand scores
+        updateScore(handScore, true, false);
+        updateScore(otherPlayerHandScore, false, false);
+        updateScore(dealerHandScore, false, true);
 
         // Print out the current hand status of all players
         System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
@@ -326,7 +316,7 @@ public class BlackjackClientFX extends Application {
 
                     // Update GUI
                     addCardToGUI(card, myHand.size(), true, false);
-                    updateScore(handScore, true);
+                    updateScore(handScore, true, false);
 
                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                             myHand.get(hitCount + 1).getSuit() + ".");
@@ -576,14 +566,14 @@ public class BlackjackClientFX extends Application {
         }
     }
 
-    private void updateScore(int handScore, boolean myCard) {
-        Platform.runLater(() ->{
-            if ((player == 1 && myCard) || (player == 2 && !myCard)) {
+    private void updateScore(int handScore, boolean myCard, boolean dealerCard) {
+        Platform.runLater(() -> {
+            if (dealerCard) {
+                lblDealerScore.setText(handScore);
+            } else if ((player == 1 && myCard) || (player == 2 && !myCard)) {
                 lblPlayer1Score.setText(handScore);
             } else if ((player == 2 && myCard) || (player == 1 && !myCard)) {
                 lblPlayer2Score.setText(handScore);
-            } else {
-                lblDealerScore.setText(handScore);
             }
         });
     }
