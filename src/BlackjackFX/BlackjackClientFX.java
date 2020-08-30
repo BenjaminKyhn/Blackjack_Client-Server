@@ -333,6 +333,9 @@ public class BlackjackClientFX extends Application {
                     btHit.setVisible(true);
                     btStand.setVisible(true);
 
+                    // reset the answer
+                    answer = "";
+
                     // Infinite loop waits for a button click
                     while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("hit")) {
                     }
@@ -548,6 +551,3 @@ public class BlackjackClientFX extends Application {
         }
     }
 }
-
-//TODO: There was some error when the first player chose to stand immediately
-// Exception in thread "JavaFX Application Thread" java.lang.IndexOutOfBoundsException: Index 3 out of bounds for length 3 (line 307 using hitcount to access myHand)
