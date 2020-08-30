@@ -7,7 +7,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -271,6 +270,23 @@ public class BlackjackClientFX extends Application {
             handValue += myHand.get(i).getValue();
             otherPlayerHandValue += otherPlayerHand.get(i).getValue();
         }
+        dealerHandValue += dealerHand.get(0).getValue();
+
+        // Update the UI with hand values
+        if (player == 1){
+            Platform.runLater(() -> {
+                lblPlayer1Value.setText(handValue);
+                lblPlayer2Value.setText(otherPlayerHandValue);
+                lblDealerValue.setText(dealerHandValue);
+            });
+        }
+        else if (player == 2){
+            Platform.runLater(() -> {
+                lblPlayer1Value.setText(otherPlayerHandValue);
+                lblPlayer2Value.setText(handValue);
+                lblDealerValue.setText(dealerHandValue);
+            });
+        }
 
         // Print out the current hand status of all players
         System.out.println("You were dealt " + myHand.get(0).getRank() + " of " + myHand.get(0).getSuit() +
@@ -437,7 +453,6 @@ public class BlackjackClientFX extends Application {
     private void receiveDealersHand() throws IOException, ClassNotFoundException {
         Card card = (Card) fromServer.readObject();
         dealerHand.add(card);
-        dealerHandValue += dealerHand.get(0).getValue();
         dealerHandValue += dealerHand.get(1).getValue();
 
         Image cardImage = new Image("image/card/" + card.getNumber() + ".png");
