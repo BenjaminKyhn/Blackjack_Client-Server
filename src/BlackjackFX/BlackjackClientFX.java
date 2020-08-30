@@ -249,6 +249,9 @@ public class BlackjackClientFX extends Application {
         otherPlayerHand.add((Card) fromServer.readObject());
         dealerHand.add((Card) fromServer.readObject());
 
+        Platform.runLater(() -> {
+            lblMessages.setText("Dealing cards.");
+        });
         playSround("shuffle", 1000);
 
         // Update cards in the UI
@@ -338,21 +341,16 @@ public class BlackjackClientFX extends Application {
 
                     System.out.println("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
                             myHand.get(hitCount + 1).getSuit() + ".");
-                    Platform.runLater(() -> {
-                        lblMessages.setText("You hit " + myHand.get(hitCount + 1).getRank() + " of " +
-                                myHand.get(hitCount + 1).getSuit() + ".");
-                    });
                     if (handScore <= 21) {
                         System.out.println("The value of your hand is " + (handScore) + ".");
                         System.out.println("Do you want to HIT or STAND?");
                         Platform.runLater(() -> {
-                            lblMessages.appendText("\n\nThe value of your hand is " + (handScore) + "."
-                                    + "\nDo you want to HIT or STAND?");
+                            lblMessages.setText("Do you want to HIT or STAND?");
                         });
                     } else {
                         System.out.println("You bust! The value of your hand is " + handScore + "!");
                         Platform.runLater(() -> {
-                            lblMessages.appendText("\nYou bust! The value of your hand is " + handScore + "!");
+                            lblMessages.setText("You bust!");
                         });
                         answer = "bust";
                         lost = true;
@@ -360,7 +358,7 @@ public class BlackjackClientFX extends Application {
                 } else {
                     System.out.println("Please type hit or stand.");
                     Platform.runLater(() -> {
-                        lblMessages.setText("Please type hit or stand");
+                        lblMessages.setText("Please type hit or stand.");
                     });
                 }
                 if (!answer.toLowerCase().equals("bust")) {
@@ -380,7 +378,7 @@ public class BlackjackClientFX extends Application {
             if (answer.toLowerCase().equals("bust")) {
                 System.out.println("YOU LOSE!\n");
                 Platform.runLater(() -> {
-                    lblMessages.appendText("\n\nYOU LOSE!");
+                    lblMessages.setText("YOU LOSE!");
                     lblDealerName.appendText(" (WIN)");
                     if (player == 1) {
                         lblPlayer1Name.appendText(" (LOSE)");
@@ -393,13 +391,15 @@ public class BlackjackClientFX extends Application {
                 Platform.runLater(() -> {
                     lblMessages.setText("You chose to stand.");
                 });
+                Thread.sleep(1000);
             }
 
         } else {
             System.out.println("You hit natural Blackjack!");
             Platform.runLater(() -> {
-                lblMessages.appendText("\n\nYou hit natural Blackjack!");
+                lblMessages.setText("You hit natural Blackjack!");
             });
+            Thread.sleep(1000);
         }
     }
 
@@ -425,19 +425,11 @@ public class BlackjackClientFX extends Application {
 
                     System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                             otherPlayerHand.get(hitCount + 1).getSuit() + ".");
-                    Platform.runLater(() -> {
-                        lblMessages.setText("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
-                                otherPlayerHand.get(hitCount + 1).getSuit() + ".");
-                    });
                     if (otherPlayerHandScore <= 21) {
                         System.out.println("The value of his hand is " + otherPlayerHandScore + ".");
-                        Platform.runLater(() -> {
-                            lblMessages.appendText("\nThe value of his hand is " + otherPlayerHandScore + ".");
-                        });
                     } else {
                         System.out.println("He bust! The value of his hand is " + otherPlayerHandScore + "!");
                         Platform.runLater(() -> {
-                            lblMessages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandScore + "!");
                             if (player == 1) {
                                 lblPlayer2Name.appendText(" (LOSE)");
                             } else if (player == 2) {
@@ -450,21 +442,20 @@ public class BlackjackClientFX extends Application {
             }
             if (answer.toLowerCase().equals("bust")) {
                 System.out.println("The other player has lost.\n");
-                Platform.runLater(() -> {
-                    lblMessages.setText("\nThe other player has lost.");
-                });
                 otherPlayerLost = true;
             } else {
                 System.out.println("The other player chose to stand.\n");
                 Platform.runLater(() -> {
-                    lblMessages.setText("\nThe other player chose to stand.");
+                    lblMessages.setText("The other player chose to stand.");
                 });
+                Thread.sleep(1000);
             }
         } else {
             System.out.println("The other player hit natural Blackjack!");
             Platform.runLater(() -> {
-                lblMessages.setText("\n\nThe other player hit a natural Blackjack!");
+                lblMessages.setText("The other player hit a natural Blackjack!");
             });
+            Thread.sleep(1000);
         }
     }
 
@@ -483,19 +474,15 @@ public class BlackjackClientFX extends Application {
         System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                 " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
                 ". The current value of his hand is " + dealerHandScore + ".");
-        Platform.runLater(() -> {
-            lblMessages.appendText("\n\nThe dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
-                    " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
-                    ". The current value of his hand is " + dealerHandScore + ".");
-        });
     }
 
     private void takeDealerTurn() throws IOException, ClassNotFoundException, InterruptedException {
         if (dealerHandScore == 21) {
             System.out.println("The dealer has natural Blackjack!");
             Platform.runLater(() -> {
-                lblMessages.setText("\n\nThe dealer has natural Blackjack!");
+                lblMessages.setText("The dealer has natural Blackjack!");
             });
+
             if (!lost) {
                 System.out.println("YOU LOSE!");
                 Platform.runLater(() -> {
@@ -508,6 +495,7 @@ public class BlackjackClientFX extends Application {
                 });
                 lost = true;
             }
+            Thread.sleep(1000);
         }
 
         if (!lost || !otherPlayerLost) {
@@ -522,21 +510,18 @@ public class BlackjackClientFX extends Application {
 
                 System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                         "of his hand is now " + dealerHandScore + ".");
-                Platform.runLater(() -> {
-                    lblMessages.setText("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
-                            "of his hand is now " + dealerHandScore + ".");
-                });
                 if (dealerHandScore > 21) {
                     System.out.println("The dealer bust!");
                     Platform.runLater(() -> {
                         lblMessages.setText("The dealer bust!");
                     });
+                    Thread.sleep(1000);
                 }
             }
         }
     }
 
-    private void checkForWin() {
+    private void checkForWin() throws InterruptedException {
         // Compare own score with dealer's score
         if ((!lost && dealerHandScore == 21) || (!lost && dealerHandScore > handScore && dealerHandScore <= 21)
                 || (!lost && dealerHandScore == handScore && dealerHandScore <= 21)) {
@@ -550,6 +535,7 @@ public class BlackjackClientFX extends Application {
                     lblPlayer2Name.appendText(" (LOSE)");
                 }
             });
+            Thread.sleep(1000);
         } else if ((!lost && dealerHandScore > 21) || (!lost && handScore > dealerHandScore)) {
             System.out.println("\nYOU WIN!");
             Platform.runLater(() -> {
@@ -561,6 +547,7 @@ public class BlackjackClientFX extends Application {
                     lblPlayer2Name.appendText(" (WIN)");
                 }
             });
+            Thread.sleep(1000);
         }
 
         // Compare the other player's score with the dealer's score
@@ -586,6 +573,7 @@ public class BlackjackClientFX extends Application {
             Platform.runLater(() -> {
                 lblMessages.setText("THE DEALER BEAT ALL PLAYERS!");
             });
+            Thread.sleep(1000);
         }
     }
 
