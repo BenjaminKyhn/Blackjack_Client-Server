@@ -307,7 +307,7 @@ public class BlackjackClientFX extends Application {
                 " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
     }
 
-    private void takeTurn() throws IOException, ClassNotFoundException {
+    private void takeTurn() throws IOException, ClassNotFoundException, InterruptedException {
         hitCount = 0;
         answer = "";
         if (handScore < 21) { // here
@@ -403,7 +403,7 @@ public class BlackjackClientFX extends Application {
         }
     }
 
-    private void observerOtherPlayer() throws IOException, ClassNotFoundException {
+    private void observerOtherPlayer() throws IOException, ClassNotFoundException, InterruptedException {
         System.out.println("Other player's turn.");
         Platform.runLater(() -> {
             lblMessages.setText("Other player's turn.");
@@ -490,7 +490,7 @@ public class BlackjackClientFX extends Application {
         });
     }
 
-    private void takeDealerTurn() throws IOException, ClassNotFoundException {
+    private void takeDealerTurn() throws IOException, ClassNotFoundException, InterruptedException {
         if (dealerHandScore == 21) {
             System.out.println("The dealer has natural Blackjack!");
             Platform.runLater(() -> {
@@ -615,7 +615,7 @@ public class BlackjackClientFX extends Application {
         return value;
     }
 
-    private void addCardToGUI(Card card, int handSize, boolean myCard, boolean dealerCard) {
+    private void addCardToGUI(Card card, int handSize, boolean myCard, boolean dealerCard) throws InterruptedException {
         Image cardImage = new Image("image/card/" + card.getNumber() + ".png");
         ImageView cardImageView = new ImageView(cardImage);
         Platform.runLater(() -> {
@@ -642,6 +642,7 @@ public class BlackjackClientFX extends Application {
                 cardImageView.yProperty().bind(imageView1.yProperty());
             }
         }
+        playSround("place", 300);
     }
 
     private void updateScore(int handScore, boolean myCard, boolean dealerCard) {
