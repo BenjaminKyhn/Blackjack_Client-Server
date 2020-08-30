@@ -5,13 +5,15 @@ import Model.Ranks;
 import UI.MyLabel;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -92,9 +94,19 @@ public class BlackjackClientFX extends Application {
         lblPlayer1Score.setFont(new Font("Arial", 24));
         lblPlayer2Score.setFont(new Font("Arial", 24));
 
-        lblMessages.setPrefWidth(300);
-        lblMessages.setTextAlignment(TextAlignment.CENTER);
         lblMessages.setWrapText(true);
+        Border border = new Border(new BorderStroke(Color.BLACK,
+                Color.BLACK,
+                Color.BLACK,
+                Color.BLACK,
+                BorderStrokeStyle.SOLID,
+                BorderStrokeStyle.SOLID,
+                BorderStrokeStyle.SOLID,
+                BorderStrokeStyle.SOLID,
+                new CornerRadii(10), BorderWidths.DEFAULT,
+                new Insets(1)));
+        lblMessages.setBorder(border);
+        lblMessages.setTextAlignment(TextAlignment.CENTER);
 
         btHit = new Button("HIT");
         btStand = new Button("STAND");
@@ -166,8 +178,8 @@ public class BlackjackClientFX extends Application {
         lblDealerScore.translateYProperty().bind(imageView5.yProperty().add((genericCard.getHeight() / 2) - (lblDealerScore.getHeight() / 2)));
 
         // Adjust the position of other UI elements
-        lblMessages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(lblMessages.getPrefWidth() / 2));
-        lblMessages.translateYProperty().bind(pane.heightProperty().divide(2).subtract(50));
+        lblMessages.translateXProperty().bind(pane.widthProperty().divide(2).subtract(lblMessages.widthProperty().divide(2)));
+        lblMessages.translateYProperty().bind(pane.heightProperty().divide(2).subtract(lblMessages.heightProperty().divide(2)));
         btHit.translateXProperty().bind(lblMessages.translateXProperty().add(lblMessages.getPrefWidth() + 30));
         btHit.translateYProperty().bind(pane.heightProperty().divide(2).subtract(btHit.getHeight() + 10));
         btStand.translateXProperty().bind(lblMessages.translateXProperty().add(lblMessages.getPrefWidth() + 30));
