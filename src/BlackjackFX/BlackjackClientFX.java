@@ -365,11 +365,11 @@ public class BlackjackClientFX extends Application {
                 System.out.println("YOU LOSE!\n");
                 Platform.runLater(() -> {
                     lblMessages.appendText("\n\nYOU LOSE!");
-                    lblDealerScore.appendText("\n(WIN)");
+                    lblDealerName.appendText(" (WIN)");
                     if (player == 1) {
-                        lblPlayer1Score.appendText("\n(LOSE)");
+                        lblPlayer1Name.appendText(" (LOSE)");
                     } else if (player == 2) {
-                        lblPlayer2Score.appendText("\n(LOSE)");
+                        lblPlayer2Name.appendText(" (LOSE)");
                     }
                 });
             } else {
@@ -423,9 +423,9 @@ public class BlackjackClientFX extends Application {
                         Platform.runLater(() -> {
                             lblMessages.appendText("\n\nHe bust! The value of his hand is " + otherPlayerHandScore + "!");
                             if (player == 1) {
-                                lblPlayer2Score.appendText("\n(LOSE)");
+                                lblPlayer2Name.appendText(" (LOSE)");
                             } else if (player == 2) {
-                                lblPlayer1Score.appendText("\n(LOSE)");
+                                lblPlayer1Name.appendText(" (LOSE)");
                             }
                         });
                     }
@@ -485,9 +485,9 @@ public class BlackjackClientFX extends Application {
                 Platform.runLater(() -> {
                     lblMessages.appendText("\n\nYOU LOSE!");
                     if (player == 1) {
-                        lblPlayer2Score.appendText("\n(LOSE)");
+                        lblPlayer2Name.appendText(" (LOSE)");
                     } else if (player == 2) {
-                        lblPlayer1Score.appendText("\n(LOSE)");
+                        lblPlayer1Name.appendText(" (LOSE)");
                     }
                 });
                 lost = true;
@@ -515,7 +515,7 @@ public class BlackjackClientFX extends Application {
                     Platform.runLater(() -> {
                         lblMessages.setText("The dealer bust!");
                         if (!lost) {
-                            lblDealerScore.appendText("\n(LOSE)");
+                            lblDealerName.appendText(" (LOSE)");
                         }
                     });
                 }
@@ -529,11 +529,11 @@ public class BlackjackClientFX extends Application {
             System.out.println("\nYOU LOSE! THE DEALER WINS!");
             Platform.runLater(() -> {
                 lblMessages.setText("YOU LOSE! THE DEALER WINS!");
-                lblDealerScore.appendText("\n(WIN)");
+                lblDealerName.appendText(" (WIN)");
                 if (player == 1){
-                    lblPlayer1Score.appendText("\n(LOSE)");
+                    lblPlayer1Name.appendText(" (LOSE)");
                 } else if (player == 2){
-                    lblPlayer2Score.appendText("\n(LOSE)");
+                    lblPlayer2Name.appendText(" (LOSE)");
                 }
             });
         } else if ((!lost && dealerHandScore > 21) || (!lost && handScore > dealerHandScore)) {
@@ -541,16 +541,16 @@ public class BlackjackClientFX extends Application {
             Platform.runLater(() -> {
                 lblMessages.setText("YOU WIN!");
                 if (player == 1){
-                    lblPlayer1Score.appendText("\n(WIN)");
+                    lblPlayer1Name.appendText(" (WIN)");
                 } else if (player == 2){
-                    lblPlayer2Score.appendText("\n(WIN)");
+                    lblPlayer2Name.appendText(" (WIN)");
                 }
             });
         } else if (lost && otherPlayerLost) {
             System.out.println("THE DEALER BEAT ALL PLAYERS!");
             Platform.runLater(() -> {
                 lblMessages.setText("THE DEALER BEAT ALL PLAYERS!");
-                lblDealerScore.appendText("\n(WIN)");
+                lblDealerName.appendText(" (WIN)");
             });
         }
     }
