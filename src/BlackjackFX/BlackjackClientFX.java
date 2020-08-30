@@ -308,11 +308,11 @@ public class BlackjackClientFX extends Application {
 
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                 if (answer.toLowerCase().equals("hit")) {
+                    // Update the hand
                     hitCount++;
                     Card card = (Card) fromServer.readObject();
                     myHand.add(card);
                     handScore = calculateHandScore(myHand);
-                    System.out.println(handScore);
 
                     // Update GUI
                     addCardToGUI(card, myHand.size(), true, false);
@@ -389,11 +389,16 @@ public class BlackjackClientFX extends Application {
             String answer = (String) fromServer.readObject();
             while (!answer.toLowerCase().equals("stand") && !answer.toLowerCase().equals("bust")) {
                 if (answer.toLowerCase().equals("hit")) {
+                    // Update the hand
                     hitCount++;
                     Card card = (Card) fromServer.readObject();
                     otherPlayerHand.add(card);
-                    addCardToGUI(card, otherPlayerHand.size(), false, false);
                     otherPlayerHandScore = calculateHandScore(otherPlayerHand);
+
+                    // Update GUI
+                    addCardToGUI(card, otherPlayerHand.size(), false, false);
+                    updateScore(otherPlayerHandScore, false, false);
+
                     System.out.println("The other player hit " + otherPlayerHand.get(hitCount + 1).getRank() + " of " +
                             otherPlayerHand.get(hitCount + 1).getSuit() + ".");
                     Platform.runLater(() -> {
@@ -439,10 +444,12 @@ public class BlackjackClientFX extends Application {
         dealerHand.add(card);
         dealerHandScore += dealerHand.get(1).getValue();
 
+        // Update GUI
         Image cardImage = new Image("image/card/" + card.getNumber() + ".png");
         Platform.runLater(() -> {
             imageView5.setImage(cardImage);
         });
+        updateScore(dealerHandScore, false, true);
 
         System.out.println("The dealer's hand is " + dealerHand.get(0).getRank() + " of " + dealerHand.get(0).getSuit() +
                 " and " + dealerHand.get(1).getRank() + " of " + dealerHand.get(1).getSuit() +
@@ -473,8 +480,12 @@ public class BlackjackClientFX extends Application {
             while (dealerHandScore < 17) {
                 Card card = (Card) fromServer.readObject();
                 dealerHand.add(card);
-                addCardToGUI(card, dealerHand.size(), false, true);
                 dealerHandScore = calculateHandScore(dealerHand);
+
+                // Update GUI
+                addCardToGUI(card, dealerHand.size(), false, true);
+                updateScore(dealerHandScore, false, true);
+
                 System.out.println("The dealer hit " + card.getRank() + " of " + card.getSuit() + ". The value " +
                         "of his hand is now " + dealerHandScore + ".");
                 Platform.runLater(() -> {
