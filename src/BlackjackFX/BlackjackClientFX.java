@@ -10,10 +10,13 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -238,13 +241,15 @@ public class BlackjackClientFX extends Application {
         }).start();
     }
 
-    private void dealCards() throws IOException, ClassNotFoundException {
+    private void dealCards() throws IOException, ClassNotFoundException, InterruptedException {
         // Contain all players' cards in their own lists
         myHand.add((Card) fromServer.readObject());
         myHand.add((Card) fromServer.readObject());
         otherPlayerHand.add((Card) fromServer.readObject());
         otherPlayerHand.add((Card) fromServer.readObject());
         dealerHand.add((Card) fromServer.readObject());
+
+        playSround("shuffle", 1000);
 
         // Update cards in the UI
         card1 = new Image("image/card/" + myHand.get(0).getNumber() + ".png");
@@ -256,19 +261,27 @@ public class BlackjackClientFX extends Application {
 
         if (player == 1) {
             imageView1.setImage(card1);
+            playSround("place", 300);
             imageView2.setImage(card2);
+            playSround("place", 300);
             imageView3.setImage(card3);
+            playSround("place", 300);
             imageView4.setImage(card4);
-            imageView5.setImage(card5);
-            imageView6.setImage(card6);
+            playSround("place", 300);
         } else if (player == 2) {
             imageView1.setImage(card3);
+            playSround("place", 300);
             imageView2.setImage(card4);
+            playSround("place", 300);
             imageView3.setImage(card1);
+            playSround("place", 300);
             imageView4.setImage(card2);
-            imageView5.setImage(card5);
-            imageView6.setImage(card6);
+            playSround("place", 300);
         }
+        imageView5.setImage(card5);
+        playSround("place", 300);
+        imageView6.setImage(card6);
+        playSround("place", 300);
 
         // Keep track of the players' hand scores
         for (int i = 0; i < 2; i++) {
@@ -294,7 +307,7 @@ public class BlackjackClientFX extends Application {
                 " and an unknown card. The value of the dealers hand so far is " + (dealerHand.get(0).getValue()) + ".\n");
     }
 
-    private void takeTurn() throws IOException, ClassNotFoundException, InterruptedException {
+    private void takeTurn() throws IOException, ClassNotFoundException {
         hitCount = 0;
         answer = "";
         if (handScore < 21) { // here
@@ -641,5 +654,17 @@ public class BlackjackClientFX extends Application {
                 lblPlayer2Score.setText(handScore);
             }
         });
+    }
+
+    private void playSround(String name, int wait) throws InterruptedException {
+        String soundFile = "";
+        if (name.equals("place"))
+            soundFile = "src/sound/cardPlace1.wav";
+        else if (name.equals("shuffle"))
+            soundFile = "src/sound/cardFan1.wav";
+        Media sound = new Media(new File(soundFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+        Thread.sleep(wait);
     }
 }
